@@ -1,0 +1,32 @@
+{
+    "name": "Taskforce",
+    "version": "1.0.0",
+    "description": "-   [x] create task api\r -   [ ] set up react\r -   [ ] set up login",
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack --mode development ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js",
+        "build": "webpack --mode production ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js"
+    },
+    "repository": "git+https://github.com/jzohdi/Taskforce.git",
+    "keywords": [],
+    "author": "Jake Zohdi <jakez1@live.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/jzohdi/Taskforce/issues"
+    },
+    "homepage": "https://github.com/jzohdi/Taskforce#readme",
+    "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/preset-env": "^7.9.5",
+        "@babel/preset-react": "^7.9.4",
+        "babel-loader": "^8.1.0",
+        "babel-plugin-transform-class-properties": "^6.24.1",
+        "prop-types": "^15.7.2",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.11"
+    },
+    "dependencies": {
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1"
+    }
+}

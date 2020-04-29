@@ -4,6 +4,7 @@ from task import urls as taskurls
 admin.autodiscover()
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('', include('frontend.urls')),
     path('', include(taskurls)),
 ]
