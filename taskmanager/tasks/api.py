@@ -1,4 +1,4 @@
-from task.models import Task
+from tasks.models import Task
 from rest_framework import viewsets, permissions
 from .serializers import taskerializer
 

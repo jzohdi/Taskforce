@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from task import urls as taskurls
+from tasks import urls as tasksurls
 admin.autodiscover()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
-    path('', include(taskurls)),
+    path('', include(tasksurls)),
 ]

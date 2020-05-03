@@ -3,7 +3,7 @@
 ## TODO
 
 -   [x] create task api
--   [ ] set up react
+-   [x] set up react
 -   [ ] set up login
 
 ## important commands
@@ -15,3 +15,5 @@
     python manage.py startapp task
     python manage.py startapp frontend
     python manage.py runserver
+
+    yarn run dev

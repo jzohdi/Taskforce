@@ -4,7 +4,7 @@
     "description": "-   [x] create task api\r -   [ ] set up react\r -   [ ] set up login",
     "main": "index.js",
     "scripts": {
-        "dev": "webpack --mode development ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js",
+        "dev": "webpack --mode development --watch ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js",
         "build": "webpack --mode production ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js"
     },
     "repository": "git+https://github.com/jzohdi/Taskforce.git",
@@ -21,12 +21,18 @@
         "@babel/preset-react": "^7.9.4",
         "babel-loader": "^8.1.0",
         "babel-plugin-transform-class-properties": "^6.24.1",
+        "eslint": "^6.8.0",
+        "prettier": "^2.0.5",
         "prop-types": "^15.7.2",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.11"
     },
     "dependencies": {
+        "@material-ui/core": "^4.9.12",
+        "@material-ui/icons": "^4.9.1",
+        "axios": "^0.19.2",
         "react": "^16.13.1",
-        "react-dom": "^16.13.1"
+        "react-dom": "^16.13.1",
+        "typeface-roboto": "^0.0.75"
     }
 }
