@@ -1,6 +1,6 @@
-from tasks.models import Task
+from tasks.models import Task, Project
 from rest_framework import viewsets, permissions
-from .serializers import taskerializer
+from .serializers import taskserializer, projectserializer
 
 # Task viewset
 
@@ -10,4 +10,12 @@ class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = [
         permissions.AllowAny
     ]
-    serializer_class = taskerializer
+    serializer_class = taskserializer
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = projectserializer
