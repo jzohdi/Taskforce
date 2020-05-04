@@ -1,12 +1,9 @@
-import React, { Fragment } from "react";
-import Form from "./form";
-import Tasks from "./tasks";
+import React from "react";
 
 export default function Dashboard() {
     return (
-        <Fragment>
-            <Form />
-            <Tasks />
-        </Fragment>
+        <>
+            <h3>Projects</h3>
+        </>
     );
 }

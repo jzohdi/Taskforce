@@ -18,4 +18,6 @@
     python manage.py startapp frontend
     python manage.py runserver
 
+    manage.py collectstatic
+
     yarn run dev
