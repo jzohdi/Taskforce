@@ -12,7 +12,10 @@ class Project(models.Model):
 
 
 class ProjectSection(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        related_name="sections",
+        on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=False)
 
     def __str__(self):
@@ -21,7 +24,9 @@ class ProjectSection(models.Model):
 
 class Task(models.Model):
     project_section = models.ForeignKey(
-        ProjectSection, on_delete=models.CASCADE)
+        ProjectSection,
+        related_name="tasks",
+        on_delete=models.CASCADE)
     name = models.CharField(max_length=100, blank=False)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { TasksContext } from "../../contexts/tasksContext";
+import { ProjectContext } from "../../contexts/tasksContext";
 import { getTasks } from "../../actions/tasks";
 
 const initialState = {
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export default function Tasks() {
-    const [state, dispatch] = useContext(TasksContext);
+    const [state, dispatch] = useContext(ProjectContext);
 
     useEffect(() => {
         getTasks(dispatch);

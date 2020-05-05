@@ -8,13 +8,24 @@ class taskserializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class projectsectionserializer(serializers.ModelSerializer):
+
+    tasks = taskserializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProjectSection
+        fields = '__all__'
+
+
 class projectserializer(serializers.ModelSerializer):
+
+    sections = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Project
         fields = '__all__'
 
-
-class projectsectionserializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectSection
-        fields = '__all__'
+    def create(self, validated_data):
+        new_project = Project.objects.create(**validated_data)
+        ProjectSection.objects.create(name="main", project=new_project)
+        return new_project

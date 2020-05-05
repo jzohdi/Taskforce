@@ -1,14 +1,18 @@
 import React, { useState, createContext, useReducer } from "react";
 import taskReducer from "../reducers/tasksReducer";
 
-export const TasksContext = createContext();
+export const ProjectContext = createContext();
 
-export const TasksProvider = (props) => {
-    const [state, dispatch] = useReducer(taskReducer, { tasks: [] });
+const initialState = {
+    projects: [],
+};
+
+export const ProjectProvider = (props) => {
+    const [state, dispatch] = useReducer(taskReducer, initialState);
 
     return (
-        <TasksContext.Provider value={[state, dispatch]}>
+        <ProjectContext.Provider value={[state, dispatch]}>
             {props.children}
-        </TasksContext.Provider>
+        </ProjectContext.Provider>
     );
 };
