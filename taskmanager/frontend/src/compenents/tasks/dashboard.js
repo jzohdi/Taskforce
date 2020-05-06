@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { NewProjectCard } from "./NewProjectCard";
 import { addProject } from "../../actions/tasks";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,10 +22,11 @@ export default function Dashboard() {
     const [state, dispatch] = useContext(ProjectContext);
     const [snackBar, setSnackBar] = useState({ initialSnackbar });
     const classes = useStyles();
+    const history = useHistory();
 
-    /* 
-
-*/
+    const goToProject = (args) => {
+        history.push("/project/" + args);
+    };
 
     const createProject = React.useCallback((title, background) => {
         if (state.projects.some((project) => project.title === title)) {
@@ -33,7 +35,7 @@ export default function Dashboard() {
                 message: `${title} already exists`,
             });
         }
-        addProject({ title, background }, dispatch);
+        addProject({ title, background }, dispatch, goToProject);
     }, []);
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);

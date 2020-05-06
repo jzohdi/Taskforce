@@ -14,11 +14,18 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
+    # queryset = Project.objects.all()
     permission_classes = [
-        permissions.AllowAny
+        permissions.IsAuthenticated
     ]
+
     serializer_class = projectserializer
+
+    def get_queryset(self):
+        return self.request.user.projects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class ProjectSectionViewSet(viewsets.ModelViewSet):
