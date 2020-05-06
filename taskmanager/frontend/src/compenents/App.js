@@ -8,13 +8,15 @@ import { ProjectProvider } from "../contexts/tasksContext";
 
 function App() {
     return (
-        <ProjectProvider>
-            <CssBaseline />
-            <Header />
-            <Container maxWidth="lg">
-                <Dashboard />
-            </Container>
-        </ProjectProvider>
+        <>
+            <ProjectProvider>
+                <CssBaseline />
+                <Header />
+                <Container maxWidth="lg">
+                    <Dashboard />
+                </Container>
+            </ProjectProvider>
+        </>
     );
 }
 
