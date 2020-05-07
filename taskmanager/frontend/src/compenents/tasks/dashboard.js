@@ -24,8 +24,12 @@ export default function Dashboard() {
     const classes = useStyles();
     const history = useHistory();
 
-    const goToProject = (args) => {
-        history.push("/project/" + args);
+    const addCallBack = (args) => {
+        if (args.success) {
+            history.push("/project/" + args);
+            return;
+        }
+        setSnackBar({ show: true, message: args.msg });
     };
 
     const createProject = React.useCallback((title, background) => {
@@ -35,7 +39,7 @@ export default function Dashboard() {
                 message: `${title} already exists`,
             });
         }
-        addProject({ title, background }, dispatch, goToProject);
+        addProject({ title, background }, dispatch, addCallBack);
     }, []);
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);
