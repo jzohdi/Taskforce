@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputFrom from "./InputFrom";
-import EmailIcon from "@material-ui/icons/Email";
-import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import LockIcon from "@material-ui/icons/Lock";
+import { registerForm, validateRegisterForm } from "./registerFields";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
+import IconButton from "@material-ui/core/IconButton";
+import { Redirect } from "react-router-dom";
+import {
+    AuthDispatchContext,
+    AuthStateContext,
+} from "../../contexts/authContext";
+import { register } from "../../actions/auth";
 
 const initialState = {
     username: "",
@@ -14,68 +20,55 @@ const initialState = {
 
 export default function Register() {
     const [state, setState] = useState(initialState);
+    const [error, setError] = useState({ show: false, msg: "" });
+    const authDispatch = useContext(AuthDispatchContext);
+    const authState = useContext(AuthStateContext);
+
+    const handleError = (message) => {
+        // console.log(message);
+        setError({ show: true, msg: message });
+    };
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(state);
+        const isValidForm = validateRegisterForm(state);
+        if (!isValidForm.status) {
+            return handleError(isValidForm.message);
+        }
+        register(state, authDispatch, handleError);
     };
 
     const handleChange = (e) => {
-        console.log(e.target.value);
-        console.log(e.target.id);
+        setState({ ...state, [e.target.id]: e.target.value });
     };
 
-    const registerForm = {
-        title: "Sign up",
-        handleChange,
-        input: [
-            {
-                icon: AccountCircleIcon,
-                id: "username",
-                label: "Username",
-                required: true,
-                type: "text",
-                variant: "outlined",
-            },
-            {
-                icon: EmailIcon,
-                id: "email",
-                label: "Email",
-                required: true,
-                type: "text",
-                variant: "outlined",
-            },
-            {
-                icon: LockIcon,
-                id: "password",
-                label: "Password",
-                required: true,
-                type: "password",
-                variant: "outlined",
-            },
-            {
-                icon: EnhancedEncryptionIcon,
-                id: "confirm_password",
-                label: "Confirm Pass",
-                required: true,
-                type: "password",
-                variant: "outlined",
-            },
-        ],
-        buttons: [
-            {
-                id: "register",
-                text: "Register",
-                color: "primary",
-                style: "outlined",
-                type: "button",
-                action: onSubmit,
-            },
-        ],
+    const handleCloseError = () => {
+        setError({ ...error, show: false });
     };
 
-    return (
+    registerForm.handleChange = handleChange;
+    registerForm.buttons[0].action = onSubmit;
+
+    return authState.isAuthenticated ? (
+        <Redirect to="/" />
+    ) : (
         <div style={{ textAlign: "-webkit-center" }}>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={error.show}
+                onClose={handleCloseError}
+                message={error.msg}
+                action={
+                    <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleCloseError}
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                }
+            />
             <InputFrom props={registerForm} />
         </div>
     );

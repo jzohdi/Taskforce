@@ -23,7 +23,6 @@ export default function Dashboard() {
     const [snackBar, setSnackBar] = useState({ initialSnackbar });
     const classes = useStyles();
     const history = useHistory();
-
     const addCallBack = (args) => {
         if (args.success) {
             history.push("/project/" + args);
@@ -34,13 +33,18 @@ export default function Dashboard() {
 
     const createProject = React.useCallback((title, background) => {
         if (state.projects.some((project) => project.title === title)) {
-            setSnackBar({
+            return setSnackBar({
                 show: true,
                 message: `${title} already exists`,
             });
         }
         addProject({ title, background }, dispatch, addCallBack);
     }, []);
+
+    const handleProjectPage = React.useCallback((index) => {
+        history.push("/projects/" + index);
+    }, []);
+
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);
     };
@@ -53,8 +57,13 @@ export default function Dashboard() {
             <h1>Projects</h1>
             <div className={classes.root}>
                 <NewProjectCard createProject={createProject} />
-                {state.projects.map((project) => {
-                    return <ProjectCard key={project.id} props={project} />;
+                {state.projects.map((project, index) => {
+                    return (
+                        <ProjectCard
+                            key={project.id}
+                            props={{ handleProjectPage, index, ...project }}
+                        />
+                    );
                 })}
             </div>
             <Snackbar

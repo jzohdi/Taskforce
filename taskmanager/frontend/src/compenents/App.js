@@ -10,7 +10,7 @@ import Header from "./layout/header";
 import Dashboard from "./tasks/dashboard";
 import Login from "./layout/Login";
 import Register from "./layout/Register";
-
+import ProjectPage from "./layout/ProjectPage";
 function App() {
     return (
         <AuthProvider>
@@ -27,7 +27,7 @@ function App() {
                             />
                             <PrivateRoute
                                 path="/project/:id"
-                                component={Dashboard}
+                                component={ProjectPage}
                             />
                             <Route path="/register" component={Register} />
                             <Route path="/login" component={Login} />

@@ -35,6 +35,8 @@ function NewProjectCardOG({ createProject }) {
 
     const handleCreateProject = () => {
         createProject(newProjectName, selectedColor);
+        setNewProjectName("");
+        setCreateNew(false);
     };
     const handleChange = (e) => {
         setNewProjectName(e.target.value);

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ProjectContext } from "../../contexts/tasksContext";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -17,7 +18,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-
+import { useParams } from "react-router-dom";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -77,7 +78,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PersistentDrawerLeft() {
+export default function ProjectPage() {
+    const [appState, dispatch] = useContext(ProjectContext);
+    const { id } = useParams();
+    const project = appState.projects[id];
+    console.log(project);
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);

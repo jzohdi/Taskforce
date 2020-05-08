@@ -5,6 +5,7 @@ import {
     LOGIN_FAILED,
     LOGIN_SUCCESS,
     LOGOUT_SUCCESS,
+    REGISTER_SUCCESS,
 } from "../actions/types";
 
 const inititalState = {
@@ -37,12 +38,16 @@ export default function authReducer(state, action) {
                 isAuthenticated: true,
                 isLoading: false,
             };
-        case LOGIN_FAILED:
-            localStorage.removeItem("token");
+        case REGISTER_SUCCESS:
+            localStorage.setItem("token", action.payload.token);
             return {
                 ...state,
-                ...inititalState,
+                token: action.payload.token,
+                user: action.payload.user,
+                isAuthenticated: true,
+                isLoading: false,
             };
+        case LOGIN_FAILED:
         case LOGOUT_SUCCESS:
             localStorage.removeItem("token");
             return {

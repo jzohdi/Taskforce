@@ -1,8 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useHistory, Redirect } from "react-router-dom";
 import InputForm from "./InputFrom";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import LockIcon from "@material-ui/icons/Lock";
 import {
     AuthDispatchContext,
     AuthStateContext,
@@ -11,6 +9,7 @@ import { login } from "../../actions/auth";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
+import loginFields from "./loginFields";
 
 const initialState = {
     username: "",
@@ -44,46 +43,11 @@ export default function Login() {
         e.preventDefault();
         history.push("/register");
     };
-    const loginFields = {
-        title: "Welcome Back!",
-        handleChange,
-        input: [
-            {
-                icon: AccountCircleIcon,
-                id: "username",
-                label: "Username",
-                required: true,
-                type: "text",
-                variant: "outlined",
-            },
-            {
-                icon: LockIcon,
-                id: "password",
-                label: "Password",
-                required: true,
-                type: "password",
-                variant: "outlined",
-            },
-        ],
-        buttons: [
-            {
-                id: "login",
-                text: "Login",
-                color: "primary",
-                style: "outlined",
-                type: "submit",
-                action: onSubmit,
-            },
-            {
-                id: "register",
-                text: "Register",
-                color: "secondary",
-                style: "outlined",
-                type: "button",
-                action: handleRegister,
-            },
-        ],
-    };
+
+    loginFields.handleChange = handleChange;
+    loginFields.buttons[0].action = onSubmit;
+    loginFields.buttons[1].action = handleRegister;
+
     return authState.isAuthenticated ? (
         <Redirect to="/" />
     ) : (

@@ -6,7 +6,10 @@ import Typography from "@material-ui/core/Typography";
 
 function ProjectCard({ props }) {
     return (
-        <Card className="project-card">
+        <Card
+            onClick={props.handleProjectPage(props.index)}
+            className="project-card"
+        >
             {props.background.includes("#") ? (
                 <div
                     style={{
