@@ -27,14 +27,17 @@ body {
     display: flex;
     flex-direction: row;
 }
+.card-list-less {
+    overflow: hidden;
+}
 .card-list {
     background-color: #ebecf0;
-    width: 220px;
+    /* min-width: 220px; */
     padding: 5px;
 }
 .card-list-container {
     overflow-x: auto;
-    max-height: calc(100vh - 243px);
+    max-height: calc(100vh - 280px);
 }
 .card-list-container::-webkit-scrollbar {
     width: 5px;
