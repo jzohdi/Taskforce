@@ -6,11 +6,13 @@ export default function taskReducer(state, action) {
             return {
                 ...state,
                 tasks: action.payload,
+                loaded: true,
             };
         case GET_PROJECTS:
             return {
                 ...state,
                 projects: action.payload,
+                loaded: true,
             };
         case ADD_PROJECT:
             const projects = state.projects;

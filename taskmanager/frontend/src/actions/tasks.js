@@ -2,93 +2,165 @@ import axios from "axios";
 
 import { GET_TASKS, GET_PROJECTS, ADD_PROJECT, DELETE_PROJECT } from "./types";
 
-export const getTasks = (dispatch) => {
-    const config = {
+const getTokenHeader = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return null;
+    }
+    return {
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            Authorization: `Token ${token}`,
         },
     };
+};
 
-    axios
-        .get("/api/tasks")
-        .then((res) => {
-            dispatch({
-                type: GET_TASKS,
-                payload: res.data,
+export const getTasks = (dispatch) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .get("/api/tasks", config)
+            .then((res) => {
+                dispatch({
+                    type: GET_TASKS,
+                    payload: res.data,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
             });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    }
+};
+export const addTask = (args, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .post("/api/tasks/", body, config)
+            .then((res) => {
+                callback(res.data);
+            })
+            .catch((err) => {
+                console.error("error in add task ", err);
+            });
+    }
 };
 
 export const getProjects = (dispatch) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        return;
-    }
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
-        },
-    };
-    axios
-        .get("/api/projects", config)
-        .then((res) => {
-            dispatch({
-                type: GET_PROJECTS,
-                payload: res.data,
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .get("/api/projects/", config)
+            .then((res) => {
+                dispatch({
+                    type: GET_PROJECTS,
+                    payload: res.data,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
             });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    }
+};
+
+export const getProject = (id, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .get(`/api/projects/${id}/`, config)
+            .then((res) => {
+                callback(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+};
+
+export const addList = (id, name) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify({ section: id, name });
+        axios
+            .post("/api/sectionlists/", body, config)
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
 };
 
 export const addProject = (args, dispatch, callback) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        return;
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .post("/api/projects/", body, config)
+            .then((res) => {
+                dispatch({
+                    type: ADD_PROJECT,
+                    payload: res.data,
+                });
+                callback({ success: true, data: res.data });
+            })
+            .catch((err) => {
+                // console.error(err.response.data);
+                callback({
+                    success: false,
+                    msg: "Could not create project",
+                    msg: Object.values(err.response.data).join(),
+                });
+                // console.error(err.response.data);
+            });
     }
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
-        },
-    };
-    const body = JSON.stringify(args);
-    axios
-        .post("/api/projects/", body, config)
-        .then((res) => {
-            dispatch({
-                type: ADD_PROJECT,
-                payload: res.data,
-            });
-            callback({ success: true, msg: res.data.id });
-        })
-        .catch((err) => {
-            // console.error(err.response.data);
-            callback({
-                success: false,
-                msg: "Could not create project",
-                msg: Object.values(err.response.data).join(),
-            });
-            // console.error(err.response.data);
-        });
 };
 
 export const deleteProject = (args, dispatch) => {
-    axios
-        .delete("/api/projects/" + args + "/")
-        .then((res) => {
-            dispatch({
-                type: DELETE_PROJECT,
-                payload: args,
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .delete("/api/projects/" + args + "/", config)
+            .then((res) => {
+                dispatch({
+                    type: DELETE_PROJECT,
+                    payload: args,
+                });
+            })
+            .catch((err) => {
+                console.error(err);
             });
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    }
+};
+
+export const updateList = (id, args) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .put(`/api/sectionlists/${id}/`, body, config)
+            .then((res) => {
+                console.log("list updated");
+            })
+            .catch((err) => {
+                console.error("update list error ", err);
+            });
+    }
 };

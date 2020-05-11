@@ -10,7 +10,6 @@ import {
     AuthDispatchContext,
 } from "../../contexts/authContext";
 import { logout } from "../../actions/auth";
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,17 +36,18 @@ const linkStyle = {
 };
 
 export default function SearchAppBar() {
-    const history = useHistory();
     const classes = useStyles();
     const auth = useContext(AuthStateContext);
     const authDispatch = useContext(AuthDispatchContext);
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" className={classes.appBar}>
+            <AppBar id="appbar" position="static" className={classes.appBar}>
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        Taskforce
+                        <Link to="/" style={linkStyle}>
+                            Taskforce
+                        </Link>
                     </Typography>
                     {auth.isAuthenticated ? (
                         <Button

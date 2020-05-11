@@ -23,9 +23,11 @@ export default function Dashboard() {
     const [snackBar, setSnackBar] = useState({ initialSnackbar });
     const classes = useStyles();
     const history = useHistory();
+
     const addCallBack = (args) => {
+        console.log(args);
         if (args.success) {
-            history.push("/project/" + args);
+            history.push("/project/" + args.data.id);
             return;
         }
         setSnackBar({ show: true, message: args.msg });
@@ -41,10 +43,6 @@ export default function Dashboard() {
         addProject({ title, background }, dispatch, addCallBack);
     }, []);
 
-    const handleProjectPage = React.useCallback((index) => {
-        history.push("/projects/" + index);
-    }, []);
-
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);
     };
@@ -57,11 +55,11 @@ export default function Dashboard() {
             <h1>Projects</h1>
             <div className={classes.root}>
                 <NewProjectCard createProject={createProject} />
-                {state.projects.map((project, index) => {
+                {state.projects.map((project) => {
                     return (
                         <ProjectCard
                             key={project.id}
-                            props={{ handleProjectPage, index, ...project }}
+                            props={{ history, id: project.id, ...project }}
                         />
                     );
                 })}

@@ -1,9 +1,29 @@
-from tasks.models import Task, Project, ProjectSection
+from tasks.models import (
+    SubTask,
+    Task,
+    SectionList,
+    ProjectNotes,
+    Project,
+    ProjectSection)
 from rest_framework import viewsets, permissions
-from .serializers import taskserializer, projectserializer, projectsectionserializer
+from .serializers import (
+    subtaskserializer,
+    taskserializer,
+    sectionlistserializer,
+    projectnotesserializer,
+    projectserializer,
+    projectsectionserializer)
 from rest_framework.response import Response
 from rest_framework import status
 # Task viewset
+
+
+class SubTaskViewSet(viewsets.ModelViewSet):
+    queryset = SubTask.objects.all()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = subtaskserializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -12,6 +32,42 @@ class TaskViewSet(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
     serializer_class = taskserializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class SectionListViewSet(viewsets.ModelViewSet):
+    queryset = SectionList.objects.all().order_by("position")
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = sectionlistserializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class ProjectNotesViewSet(viewsets.ModelViewSet):
+    queryset = ProjectNotes.objects.all()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = projectnotesserializer
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -23,6 +79,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = projectserializer
 
     def get_queryset(self):
+        project_id = self.request.query_params.get('id', None)
+        if project_id is not None:
+            return self.request.user.projects.filter(id=project_id)
         return self.request.user.projects.all()
 
     def create(self, request, *args, **kwargs):

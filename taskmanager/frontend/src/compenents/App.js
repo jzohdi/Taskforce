@@ -4,20 +4,21 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import { ProjectProvider } from "../contexts/tasksContext";
 import { AuthProvider } from "../contexts/authContext";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PrivateRoute from "./common/privateRoute";
-import Header from "./layout/header";
+import Header from "./layout/Header";
 import Dashboard from "./tasks/dashboard";
 import Login from "./layout/Login";
 import Register from "./layout/Register";
 import ProjectPage from "./layout/ProjectPage";
+
 function App() {
     return (
         <AuthProvider>
             <ProjectProvider>
                 <Router>
-                    <CssBaseline />
                     <Header />
+                    <CssBaseline />
                     <Container maxWidth="lg">
                         <Switch>
                             <PrivateRoute

@@ -5,11 +5,11 @@ import { loadUser } from "../actions/auth";
 export const AuthStateContext = createContext();
 export const AuthDispatchContext = createContext();
 // export const AuthContext = createContext();
-
+const token = localStorage.getItem("token");
 const initialState = {
-    token: localStorage.getItem("token"),
-    isAuthenticated: null,
-    isLoading: false,
+    token: token,
+    isAuthenticated: token ? true : false,
+    isLoading: true,
     user: null,
 };
 
@@ -19,10 +19,6 @@ export const AuthProvider = (props) => {
         loadUser(state, dispatch);
     }, []);
 
-    // useEffect(() => {
-    //     console.log("in auth provider");
-    //     console.log(state);
-    // }, [state]);
     return (
         <AuthStateContext.Provider value={state}>
             <AuthDispatchContext.Provider value={dispatch}>
