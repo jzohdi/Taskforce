@@ -9,6 +9,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { NewProjectCard } from "./NewProjectCard";
 import { addProject } from "../../actions/tasks";
 import { useHistory } from "react-router-dom";
+import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -51,7 +52,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <>
+        <Container maxWidth="lg">
             <h1>Projects</h1>
             <div className={classes.root}>
                 <NewProjectCard createProject={createProject} />
@@ -84,6 +85,6 @@ export default function Dashboard() {
                     </IconButton>
                 }
             />
-        </>
+        </Container>
     );
 }

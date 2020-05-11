@@ -28,25 +28,27 @@ body {
     flex-direction: row;
 }
 .card-list {
-    overflow-x: scroll;
     background-color: #ebecf0;
     width: 220px;
     padding: 5px;
-    max-height: calc(100vh - 155px);
 }
-.card-list::-webkit-scrollbar {
+.card-list-container {
+    overflow-x: auto;
+    max-height: calc(100vh - 243px);
+}
+.card-list-container::-webkit-scrollbar {
     width: 5px;
 }
 
 /* Track */
-.card-list::-webkit-scrollbar-track {
+.card-list-container::-webkit-scrollbar-track {
     width: 5px;
     box-shadow: inset 0 0 5px rgb(255, 255, 255);
     border-radius: 7px;
 }
 
 /* Handle */
-.card-list::-webkit-scrollbar-thumb {
+.card-list-container::-webkit-scrollbar-thumb {
     background: rgb(165, 156, 165);
     border-radius: 10px;
 }

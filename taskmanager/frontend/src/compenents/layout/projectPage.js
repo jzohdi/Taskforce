@@ -182,8 +182,8 @@ export default function ProjectPage() {
                 // styling accounts for the nav bar, and container padding
                 minHeight: "calc(100vh - 64px)",
                 backgroundColor: project.background,
-                marginLeft: -24,
-                marginRight: -24,
+                paddingLeft: 15,
+                paddingRight: 15,
             }}
         >
             <div style={{ padding: "10px 5px" }}>

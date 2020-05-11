@@ -70,34 +70,38 @@ export default function ListCard({ list }) {
                         },
                     }}
                 />
-                {state.tasks.map((task) => {
-                    return <Task key={task.id} props={task} />;
-                })}
-                {addNew ? (
-                    <div>
-                        <TextField
-                            style={{
-                                marginTop: 10,
-                            }}
-                            size="small"
-                            variant="outlined"
-                            label="new task name"
-                            InputProps={{
-                                id: "new-task-name",
-                            }}
-                        />
-                        <div style={{ textAlign: "right" }}>
-                            <ButtonGroup>
-                                <Button onClick={handleCreateTask}>
-                                    <AddCircleOutlineIcon />
-                                </Button>
-                                <Button onClick={handleAddTask}>
-                                    <CancelIcon />
-                                </Button>
-                            </ButtonGroup>
+                <div className="card-list-container">
+                    {state.tasks.map((task) => {
+                        return <Task key={task.id} props={task} />;
+                    })}
+                    {addNew && (
+                        <div>
+                            <TextField
+                                style={{
+                                    marginTop: 10,
+                                }}
+                                autoFocus={true}
+                                size="small"
+                                variant="outlined"
+                                label="new task name"
+                                InputProps={{
+                                    id: "new-task-name",
+                                }}
+                            />
+                            <div style={{ textAlign: "right" }}>
+                                <ButtonGroup>
+                                    <Button onClick={handleCreateTask}>
+                                        <AddCircleOutlineIcon />
+                                    </Button>
+                                    <Button onClick={handleAddTask}>
+                                        <CancelIcon />
+                                    </Button>
+                                </ButtonGroup>
+                            </div>
                         </div>
-                    </div>
-                ) : (
+                    )}
+                </div>
+                {!addNew && (
                     <div>
                         <Button
                             style={{ width: "100%", marginTop: 10 }}
