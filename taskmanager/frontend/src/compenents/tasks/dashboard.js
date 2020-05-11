@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { NewProjectCard } from "./NewProjectCard";
 import { addProject } from "../../actions/tasks";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,20 +22,27 @@ export default function Dashboard() {
     const [state, dispatch] = useContext(ProjectContext);
     const [snackBar, setSnackBar] = useState({ initialSnackbar });
     const classes = useStyles();
+    const history = useHistory();
 
-    /* 
-
-*/
+    const addCallBack = (args) => {
+        console.log(args);
+        if (args.success) {
+            history.push("/project/" + args.data.id);
+            return;
+        }
+        setSnackBar({ show: true, message: args.msg });
+    };
 
     const createProject = React.useCallback((title, background) => {
         if (state.projects.some((project) => project.title === title)) {
-            setSnackBar({
+            return setSnackBar({
                 show: true,
                 message: `${title} already exists`,
             });
         }
-        addProject({ title, background }, dispatch);
+        addProject({ title, background }, dispatch, addCallBack);
     }, []);
+
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);
     };
@@ -48,7 +56,12 @@ export default function Dashboard() {
             <div className={classes.root}>
                 <NewProjectCard createProject={createProject} />
                 {state.projects.map((project) => {
-                    return <ProjectCard key={project.id} props={project} />;
+                    return (
+                        <ProjectCard
+                            key={project.id}
+                            props={{ history, id: project.id, ...project }}
+                        />
+                    );
                 })}
             </div>
             <Snackbar

@@ -21,6 +21,35 @@ body {
 .create-new-dialog-box {
     background-color: transparent;
 }
+.tasksSection {
+    align-items: flex-start;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+.card-list {
+    overflow-x: scroll;
+    background-color: #ebecf0;
+    width: 220px;
+    padding: 5px;
+    max-height: calc(100vh - 155px);
+}
+.card-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.card-list::-webkit-scrollbar-track {
+    width: 5px;
+    box-shadow: inset 0 0 5px rgb(255, 255, 255);
+    border-radius: 7px;
+}
+
+/* Handle */
+.card-list::-webkit-scrollbar-thumb {
+    background: rgb(165, 156, 165);
+    border-radius: 10px;
+}
 
 @media only screen and (min-width: 320px) and (max-width: 479px) {
     /*  */
@@ -37,3 +66,28 @@ body {
 @media only screen and (min-width: 992px) {
     /*  */
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+    margin-bottom: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    height: 15px;
+    box-shadow: inset 0 0 5px rgb(255, 255, 255);
+    border-radius: 7px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(165, 156, 165);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+    background: #665e5e;
+} */

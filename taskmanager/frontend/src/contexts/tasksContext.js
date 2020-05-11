@@ -5,6 +5,7 @@ export const ProjectContext = createContext();
 
 const initialState = {
     projects: [],
+    loaded: false,
 };
 
 export const ProjectProvider = (props) => {

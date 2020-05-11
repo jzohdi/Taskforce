@@ -1,5 +1,11 @@
-const GET_TASKS = "getTasks";
-const GET_PROJECTS = "get_projects";
-const ADD_PROJECT = "add_project";
-const DELETE_PROJECT = "delete_project";
-export { GET_TASKS, GET_PROJECTS, ADD_PROJECT, DELETE_PROJECT };
+export const GET_TASKS = "GET_TASKS";
+export const GET_PROJECTS = "GET_PROJECTS";
+export const ADD_PROJECT = "ADD_PROJECT";
+export const DELETE_PROJECT = "DELETE_PROJECT";
+export const USER_LOADING = "LOGIN_USER";
+export const USER_LOADED = "USER_LOADED";
+export const AUTH_ERROR = "AUTH_ERROR";
+export const LOGIN_FAILED = "LOGIN_FAILED";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";

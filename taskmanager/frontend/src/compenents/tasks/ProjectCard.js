@@ -6,7 +6,14 @@ import Typography from "@material-ui/core/Typography";
 
 function ProjectCard({ props }) {
     return (
-        <Card className="project-card">
+        <Card
+            onClick={() => {
+                props.history.push({
+                    pathname: "/project/" + props.id,
+                });
+            }}
+            className="project-card"
+        >
             {props.background.includes("#") ? (
                 <div
                     style={{
