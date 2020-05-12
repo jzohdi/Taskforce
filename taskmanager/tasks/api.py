@@ -45,7 +45,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class SectionListViewSet(viewsets.ModelViewSet):
-    queryset = SectionList.objects.all().order_by("position")
+    queryset = SectionList.objects.all()
     permission_classes = [
         permissions.AllowAny
     ]
