@@ -11,8 +11,8 @@ const AddCardButton = withStyles((theme) => ({
     root: {
         color: "white",
         backgroundColor: "#ffffff47",
-        width: 220,
-        minWidth: 220,
+        width: 290,
+        minWidth: 290,
         borderRadius: 5,
         "&:hover": {
             backgroundColor: "#0000004a",
@@ -52,7 +52,7 @@ export default function AddCard({ props }) {
                                 variant="outlined"
                                 style={{
                                     margin: "10px 5px 5px 5px",
-                                    width: 210,
+                                    width: 280,
                                 }}
                             />
                         </div>

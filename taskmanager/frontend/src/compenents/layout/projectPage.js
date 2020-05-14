@@ -40,16 +40,19 @@ export default function ProjectPage() {
         }
     };
     const getLists = () => {
-        const lists = project.sections[currentSection].lists.sort(
+        return project.sections[currentSection].lists.sort(
             (a, b) => a.position - b.position
         );
-        console.log(lists);
-        return lists;
     };
-    const handleTitle = (e) => {
-        setProject({ ...project, title: e.target.value });
+    const updateListInApp = (list, index) => {
+        const proj = project;
+        proj.sections[currentSection].lists[index] = list;
+        setProject({ ...proj });
     };
 
+    const handleUpdateSectionName = (section, i) => {
+        console.error("TODO update section name");
+    };
     const handleSetSnackbar = (message, severity) => {
         setSnackbar(snackConstructor(message, severity));
     };
@@ -101,15 +104,23 @@ export default function ProjectPage() {
                     title: project.title,
                     currentSection,
                     sectionName: project.sections[currentSection].name,
-                    handleTitle,
                     setCurrentSection,
-                    sections: project.sections,
+                    sections: project.sections.map((x, i) => {
+                        return { name: x.name, i: i, id: x.id };
+                    }),
                 }}
             />
             <div className="tasksSection">
                 <AddCard props={{ handleAddList }} />
-                {getLists().map((list) => {
-                    return <ListCard key={list.name} list={list} />;
+                {getLists().map((list, i) => {
+                    return (
+                        <ListCard
+                            key={list.id}
+                            list={list}
+                            index={i}
+                            updateListInApp={updateListInApp}
+                        />
+                    );
                 })}
             </div>
             <Snackbar
