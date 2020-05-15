@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         width: "100%",
-        height: "80vh",
+        minHeight: 370,
         position: "relative",
         borderRadius: 4,
         backgroundColor: theme.palette.background.paper,
@@ -44,12 +44,15 @@ export default function Task({ props, index, updateTask }) {
 
     const handleChange = (event) => {
         const updated = { ...task, completed: event.target.checked };
-        setTask(updated);
         updateTask(updated, index);
     };
     const handleUpdateName = (e) => {
         const updated = { ...task, name: e.target.value };
         setTask(updated);
+    };
+    const addSubTask = (subTaskJson) => {
+        task.subtasks.push(subTaskJson);
+        updateTask({ ...task }, index);
     };
     const handleExpand = () => {
         setExpand(!expand);
@@ -78,11 +81,11 @@ export default function Task({ props, index, updateTask }) {
                     }}
                 >
                     <Checkbox
-                        checked={task.completed}
+                        checked={props.completed}
                         onChange={handleChange}
                         inputProps={{ "aria-label": "primary checkbox" }}
                     />
-                    <span style={{ paddingLeft: 10 }}>{task.name}</span>
+                    <span style={{ paddingLeft: 10 }}>{props.name}</span>
                     <ButtonGroup>
                         <Button onClick={handleEdit} style={{ border: "none" }}>
                             <EditIcon />
@@ -123,6 +126,7 @@ export default function Task({ props, index, updateTask }) {
                     <Container maxWidth="lg">
                         <div className={classes.paper}>
                             <TaskModelContent
+                                addSubTask={addSubTask}
                                 task={task}
                                 handleClose={handleClose}
                                 handleUpdateName={handleUpdateName}

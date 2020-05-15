@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Input from "@material-ui/core/Input";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import DateFnsUtils from "@date-io/date-fns";
@@ -9,8 +8,10 @@ import {
     KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Checkbox from "@material-ui/core/Checkbox";
+import { TextField } from "@material-ui/core";
 
 export default function TaskModelContent({
+    addSubTask,
     task,
     handleClose,
     handleUpdateName,
@@ -27,18 +28,23 @@ export default function TaskModelContent({
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
+    const handleAddSub = (subTaskName) => {
+        const newTask = { id: task.id, name: subTaskName, completed: false };
+        addSubTask(newTask);
+    };
+    const completeSubTask = () => {};
     return (
         <>
-            <Input
+            <TextField
+                size="small"
+                variant="outlined"
                 onChange={handleUpdateName}
                 spellCheck="false"
+                label="Title"
                 style={{ color: "black" }}
                 value={task.name}
-                inputProps={{
-                    "aria-label": "list title",
-                    style: {
-                        width: "100%",
-                    },
+                style={{
+                    width: "90%",
                 }}
             />
             <IconButton
@@ -94,7 +100,36 @@ export default function TaskModelContent({
                 )}
             </div>
             <div>
-                <h3>Sub Tasks</h3>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    <h3 style={{ margin: 0 }}>Sub Tasks</h3>
+                    <TextField
+                        size="small"
+                        label="New Sub Task"
+                        variant="outlined"
+                        onKeyDown={(e) => {
+                            if (e.keyCode == 13) {
+                                handleAddSub(e.target.value);
+                            }
+                        }}
+                    />
+                </div>
+                {task.subtasks.map((subTask, i) => {
+                    return (
+                        <div key={i}>
+                            <Checkbox
+                                onChange={completeSubTask}
+                                checked={subTask.completed}
+                            />
+                            {subTask.name}
+                        </div>
+                    );
+                })}
             </div>
         </>
     );

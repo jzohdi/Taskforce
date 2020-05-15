@@ -134,6 +134,7 @@ export const deleteProject = (args, dispatch) => {
     if (!config) {
         console.error("No token present.");
     } else {
+        console.log("got here");
         axios
             .delete("/api/projects/" + args + "/", config)
             .then((res) => {

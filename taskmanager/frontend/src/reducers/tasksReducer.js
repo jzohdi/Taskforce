@@ -1,4 +1,9 @@
-import { GET_TASKS, GET_PROJECTS, ADD_PROJECT } from "../actions/types";
+import {
+    GET_TASKS,
+    GET_PROJECTS,
+    ADD_PROJECT,
+    DELETE_PROJECT,
+} from "../actions/types";
 
 export default function taskReducer(state, action) {
     switch (action.type) {
@@ -15,11 +20,19 @@ export default function taskReducer(state, action) {
                 loaded: true,
             };
         case ADD_PROJECT:
-            const projects = state.projects;
-            projects.push(action.payload);
+            const addProject = state.projects;
+            addProject.push(action.payload);
             return {
                 ...state,
-                projects,
+                projects: addProject,
+            };
+        case DELETE_PROJECT:
+            const deleteProject = state.projects.filter(
+                (proj) => proj.id != action.payload
+            );
+            return {
+                ...state,
+                projects: deleteProject,
             };
         default:
             return state;
