@@ -98,7 +98,7 @@ function NewProjectCardOG({ createProject }) {
                                 autoFocus
                                 label="Project Name"
                                 type="text"
-                                fullWidth
+                                fullwidth
                             />
                         </DialogContent>
                         <DialogActions>

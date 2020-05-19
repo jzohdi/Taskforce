@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import Collapse from "@material-ui/core/Collapse";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -12,7 +12,8 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import TaskModelContent from "./TaskModelContent";
 import Container from "@material-ui/core/Container";
-
+import { update } from "../../actions/tasks";
+import { Tooltip } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: "flex",
@@ -35,24 +36,41 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-
-export default function Task({ props, index, updateTask }) {
+const formatName = (taskName) => {
+    if (taskName.length >= 13) {
+        return (
+            <Tooltip title={taskName}>
+                <span>{taskName.slice(0, 12)}..</span>
+            </Tooltip>
+        );
+    }
+    return taskName;
+};
+const handleUpdateServer = (taskState) => {
+    const [id, task] = (({ subtasks, id, ...o }) => [id, o])(taskState);
+    update("tasks", id, task);
+};
+export default function Task({ props, updateProgress }) {
     const classes = useStyles();
     const [task, setTask] = useState(props);
     const [expand, setExpand] = useState(false);
     const [editTask, setEditTask] = useState(false);
 
     const handleChange = (event) => {
+        const action = event.target.checked ? 1 : -1;
+        updateProgress(action);
         const updated = { ...task, completed: event.target.checked };
-        updateTask(updated, index);
-    };
-    const handleUpdateName = (e) => {
-        const updated = { ...task, name: e.target.value };
         setTask(updated);
+        handleUpdateServer(updated);
+    };
+    const handleUpdate = (propName, value) => {
+        const updated = { ...task, [propName]: value };
+        setTask(updated);
+        handleUpdateServer(updated);
     };
     const addSubTask = (subTaskJson) => {
         task.subtasks.push(subTaskJson);
-        updateTask({ ...task }, index);
+        setTask({ ...task });
     };
     const handleExpand = () => {
         setExpand(!expand);
@@ -81,20 +99,28 @@ export default function Task({ props, index, updateTask }) {
                     }}
                 >
                     <Checkbox
-                        checked={props.completed}
+                        checked={task.completed}
                         onChange={handleChange}
                         inputProps={{ "aria-label": "primary checkbox" }}
                     />
-                    <span style={{ paddingLeft: 10 }}>{props.name}</span>
+                    {task.completed ? (
+                        <del className="task-title-style">
+                            {formatName(task.name)}
+                        </del>
+                    ) : (
+                        <span className="task-title-style">
+                            {formatName(task.name)}
+                        </span>
+                    )}
                     <ButtonGroup>
                         <Button onClick={handleEdit} style={{ border: "none" }}>
-                            <EditIcon />
+                            <EditIcon fontSize="small" />
                         </Button>
                         <Button
                             onClick={handleExpand}
                             style={{ border: "none" }}
                         >
-                            <ExpandMoreIcon />
+                            <ExpandMoreIcon fontSize="small" />
                         </Button>
                     </ButtonGroup>
                 </div>
@@ -104,8 +130,8 @@ export default function Task({ props, index, updateTask }) {
                             * No sub-tasks *
                         </div>
                     ) : (
-                        task.subtasks.map((subtask) => {
-                            return <div key={subtask.id}>{subtask.name}</div>;
+                        task.subtasks.map((subtask, i) => {
+                            return <div key={i}>{subtask.name}</div>;
                         })
                     )}
                 </Collapse>
@@ -129,7 +155,7 @@ export default function Task({ props, index, updateTask }) {
                                 addSubTask={addSubTask}
                                 task={task}
                                 handleClose={handleClose}
-                                handleUpdateName={handleUpdateName}
+                                handleUpdate={handleUpdate}
                             />
                         </div>
                     </Container>

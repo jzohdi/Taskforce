@@ -9,6 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { ListItemIcon } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
+import { update } from "../../actions/tasks";
 
 const ProjectBarButton = withStyles((theme) => ({
     root: {
@@ -32,22 +33,51 @@ const useStyles = makeStyles({
         textAlign: "center",
     },
 });
-
+const initTitle = (title) => {
+    return { curr: title, prev: title };
+};
+const initSectionName = (name) => {
+    return { curr: name, prev: name };
+};
 export default function ProjectBar({ props }) {
     const [sidebar, setSidebar] = useState(false);
-    const [currTitle, setCurrTitle] = useState(props.title);
-    const [currSectionName, setSectionName] = useState(props.sectionName);
-
+    const [currTitle, setCurrTitle] = useState(initTitle(props.title));
+    const [sectionName, setSectionName] = useState(
+        initSectionName(props.sectionName)
+    );
     const classes = useStyles();
 
     useEffect(() => {
-        setCurrTitle(props.title);
+        setCurrTitle(initTitle(props.title));
     }, [props.title]);
     useEffect(() => {
-        setCurrTitle(props.sectionName);
+        setSectionName(initSectionName(props.sectionName));
     }, [props.sectionName]);
 
-    const handleUpdateTitle = () => {};
+    const handleSectionNameUpdate = () => {
+        if (sectionName.curr !== sectionName.prev) {
+            update("projectSections", props.sectionId, {
+                name: sectionName.curr,
+                project: props.id,
+            });
+        }
+    };
+    const handleSectionNameChange = (e) => {
+        setSectionName({ ...sectionName, curr: e.target.value });
+    };
+    const handleUpdateTitle = () => {
+        const currentTitle = currTitle.curr;
+        if (currentTitle !== currTitle.prev) {
+            setCurrTitle(initTitle(currentTitle));
+            update("projects", props.id, {
+                title: currentTitle,
+                background: props.background,
+            });
+        }
+    };
+    const handleTitleChange = (e) => {
+        setCurrTitle({ ...currTitle, curr: e.target.value });
+    };
     const toggleDrawer = (event) => {
         setSidebar(!sidebar);
     };
@@ -92,11 +122,11 @@ export default function ProjectBar({ props }) {
         <>
             <div style={{ padding: "10px 5px", position: "absolute" }}>
                 <Input
-                    onChange={(e) => setCurrTitle(e.target.value)}
+                    onChange={handleTitleChange}
                     onBlur={handleUpdateTitle}
                     spellCheck="false"
                     style={{ color: "white" }}
-                    value={currTitle}
+                    value={currTitle.curr}
                     inputProps={{
                         "aria-label": "description",
                         style: {
@@ -109,8 +139,9 @@ export default function ProjectBar({ props }) {
                     // onChange={props.handleTitle}
                     spellCheck="false"
                     style={{ color: "white" }}
-                    value={currSectionName}
-                    onChange={(e) => setSectionName(e.target.value)}
+                    value={sectionName.curr}
+                    onChange={handleSectionNameChange}
+                    onBlur={handleSectionNameUpdate}
                     inputProps={{
                         "aria-label": "description",
                         style: {

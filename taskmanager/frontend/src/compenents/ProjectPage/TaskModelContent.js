@@ -14,17 +14,28 @@ export default function TaskModelContent({
     addSubTask,
     task,
     handleClose,
-    handleUpdateName,
+    handleUpdate,
 }) {
     const tomorrow = new Date();
     tomorrow.setDate(new Date().getDate() + 1);
     const [selectedDate, setSelectedDate] = React.useState(tomorrow);
     const [duedate, setDuedate] = useState(false);
-
+    const [currentState, setcurrentState] = useState(task);
     const handleDueChecked = () => {
         setDuedate(!duedate);
     };
-
+    const handleName = (e) => {
+        setcurrentState({ currentState, name: e.target.value });
+    };
+    const handleDescription = (e) => {
+        setcurrentState({ currentState, description: e.target.value });
+    };
+    const handleShouldUpdate = (property) => {
+        const value = currentState[property];
+        if (value !== task[property]) {
+            handleUpdate(property, value);
+        }
+    };
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -38,11 +49,19 @@ export default function TaskModelContent({
             <TextField
                 size="small"
                 variant="outlined"
-                onChange={handleUpdateName}
+                onChange={handleName}
+                onBlur={() => {
+                    handleShouldUpdate("name");
+                }}
+                onKeyDown={(e) => {
+                    if (e.keyCode == 13) {
+                        handleShouldUpdate("name");
+                    }
+                }}
                 spellCheck="false"
                 label="Title"
                 style={{ color: "black" }}
-                value={task.name}
+                value={currentState.name}
                 style={{
                     width: "90%",
                 }}
@@ -54,14 +73,21 @@ export default function TaskModelContent({
                 <CloseIcon />
             </IconButton>
             <h3 style={{ marginBottom: 3 }}>Description</h3>
-            <div
+            <TextField
                 style={{
                     width: "100%",
                     minHeight: 50,
                     backgroundColor: "#efefef",
                 }}
-                contentEditable="true"
-            ></div>
+                onChange={handleDescription}
+                onBlur={() => {
+                    handleShouldUpdate("description");
+                }}
+                multiline
+                rows={4}
+                value={currentState.description}
+                variant="filled"
+            />
             <div
                 style={{ marginBottom: 3, padding: "20px 0px", minHeight: 90 }}
             >
@@ -103,11 +129,9 @@ export default function TaskModelContent({
                 <div
                     style={{
                         display: "flex",
-                        justifyContent: "space-between",
                         alignItems: "center",
                     }}
                 >
-                    <h3 style={{ margin: 0 }}>Sub Tasks</h3>
                     <TextField
                         size="small"
                         label="New Sub Task"

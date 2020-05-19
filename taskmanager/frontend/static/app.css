@@ -56,6 +56,14 @@ body {
     border-radius: 10px;
 }
 
+/* ======================= Task styles ================================ */
+.task-title-style {
+    padding-left: 10px;
+    font-size: 1.2em;
+    cursor: default;
+}
+
+/*======================= END TASK STYLES ============================ */
 @media only screen and (min-width: 320px) and (max-width: 479px) {
     /*  */
 }

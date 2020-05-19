@@ -10,62 +10,75 @@ import Task from "./Task";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Tooltip from "@material-ui/core/Tooltip";
-import { updateList, addTask } from "../../actions/tasks";
+import { addTask, update, deleteItem } from "../../actions/tasks";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
-export default function ListCard({ list, index, updateListInApp }) {
+const getProgress = (tasksArray) => {
+    const totalTasks = tasksArray.length;
+    if (totalTasks === 0) {
+        return { completed: 0, total: 0 };
+    }
+    const completed = tasksArray.reduce(
+        (acc, { completed }) => (completed ? acc + 1 : acc),
+        0
+    );
+    return { completed, total: totalTasks };
+};
+
+export default function ListCard({ list }) {
+    const [listState, setListState] = useState(list);
     const [addNew, setAddNew] = useState(false);
-    const [prevname, setPrevname] = useState(list.name);
+    const [currentName, setCurrentName] = useState(list.name);
     const [expand, setExpand] = useState(true);
+    const [progress, setProgress] = useState(getProgress(list.tasks));
+    const [deleted, setDeleted] = useState(false);
 
     const handleName = () => {
-        if (prevname !== list.name) {
-            setPrevname(list.name);
-            updateList(list.id, { name: list.name, section: list.section });
+        if (currentName !== listState.name) {
+            update("sectionlists", listState.id, {
+                name: currentName,
+                section: listState.section,
+            });
         }
     };
     const handleNameChange = (e) => {
-        const updated = { ...list, name: e.target.value };
-        updateListInApp(updated, index);
+        setCurrentName(e.target.value);
     };
     const handleAddTask = () => {
         setAddNew(!addNew);
     };
     const handleCallback = (task) => {
-        const newTaskList = list.tasks;
+        const newTaskList = listState.tasks;
         newTaskList.push(task);
-        const updated = { ...list, tasks: newTaskList };
-        updateListInApp(updated, index);
+        setProgress({ ...progress, total: progress.total + 1 });
+        setListState({ ...listState, tasks: newTaskList });
     };
     const handleCreateTask = () => {
         const name = document.getElementById("new-task-name").value;
         if (name === "") {
             return;
         }
-        const section_list = list.id;
+        const section_list = listState.id;
         addTask({ name, section_list }, handleCallback);
     };
     const expandLess = () => {
         setExpand(false);
     };
-    const updateTask = (updatedTask, idx) => {
-        const newState = list;
-        newState.tasks[idx] = updatedTask;
-        updateListInApp(newState, index);
-    };
     const completePercentage = () => {
-        const totalTasks = list.tasks.length;
-        if (totalTasks === 0) {
-            return "100%";
-        }
-        const completed = list.tasks.reduce(
-            (acc, { completed }) => (completed ? acc + 1 : acc),
-            0
-        );
-        const res = Math.round((completed / totalTasks) * 100);
-        // console.error(Math.round(completed / totalTasks) * 100);
+        const res = Math.round((progress.completed / progress.total) * 100);
         return `${res}%`;
     };
-    return (
+    const updateProgress = (action) => {
+        const completed = progress.completed + action;
+        setProgress({ ...progress, completed });
+    };
+    const handleDeleteList = () => {
+        setDeleted(true);
+        deleteItem("sectionlists", list.id);
+    };
+    return deleted ? (
+        <div></div>
+    ) : (
         <div
             style={{
                 transition: "all 0.4s",
@@ -86,7 +99,10 @@ export default function ListCard({ list, index, updateListInApp }) {
                                 borderRadius: 5,
                                 height: 10,
                                 width: completePercentage(),
-                                backgroundColor: "#0d47a1",
+                                backgroundColor:
+                                    progress.completed === progress.total
+                                        ? "#009688"
+                                        : "#0d47a1",
                             }}
                         ></div>
                     </div>
@@ -102,7 +118,7 @@ export default function ListCard({ list, index, updateListInApp }) {
                         onChange={handleNameChange}
                         spellCheck="false"
                         style={{ color: "black" }}
-                        value={list.name}
+                        value={currentName}
                         inputProps={{
                             "aria-label": "list title",
                             style: {
@@ -112,13 +128,21 @@ export default function ListCard({ list, index, updateListInApp }) {
                         }}
                     />
                     <span>
+                        <IconButton>
+                            <Tooltip title="Delete">
+                                <DeleteForeverIcon
+                                    fontSize="small"
+                                    onClick={handleDeleteList}
+                                />
+                            </Tooltip>
+                        </IconButton>
                         {expand ? (
                             <IconButton onClick={expandLess}>
                                 <Tooltip
                                     title="Expand less"
                                     aria-label="show less"
                                 >
-                                    <ExpandLessIcon />
+                                    <ExpandLessIcon fontSize="small" />
                                 </Tooltip>
                             </IconButton>
                         ) : (
@@ -131,7 +155,7 @@ export default function ListCard({ list, index, updateListInApp }) {
                                     title="Expand Tasks"
                                     aria-label="show more"
                                 >
-                                    <ExpandMoreIcon />
+                                    <ExpandMoreIcon fontSize="small" />
                                 </Tooltip>
                             </IconButton>
                         )}
@@ -140,13 +164,13 @@ export default function ListCard({ list, index, updateListInApp }) {
                 {expand && (
                     <>
                         <div className="card-list-container">
-                            {list.tasks.map((task, i) => {
+                            {listState.tasks.map((task, i) => {
                                 return (
                                     <Task
+                                        updateProgress={updateProgress}
                                         key={task.id}
                                         props={task}
                                         index={i}
-                                        updateTask={updateTask}
                                     />
                                 );
                             })}
