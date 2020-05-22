@@ -9,7 +9,14 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { ListItemIcon } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
-import { update } from "../../actions/tasks";
+import CloseIcon from "@material-ui/icons/Close";
+import { update, addSection, deleteItem } from "../../actions/tasks";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const ProjectBarButton = withStyles((theme) => ({
     root: {
@@ -39,20 +46,37 @@ const initTitle = (title) => {
 const initSectionName = (name) => {
     return { curr: name, prev: name };
 };
+const initSnackbar = { show: false, severity: "info", msg: "" };
+
+const snackConstructor = (msg, severity) => {
+    return { show: true, severity, msg };
+};
+
 export default function ProjectBar({ props }) {
     const [sidebar, setSidebar] = useState(false);
     const [currTitle, setCurrTitle] = useState(initTitle(props.title));
     const [sectionName, setSectionName] = useState(
         initSectionName(props.sectionName)
     );
+    const [addNewSection, setAddNewSection] = useState(false);
+    const [sections, setSections] = useState(props.sections);
     const classes = useStyles();
-
+    const [snackbar, setSnackbar] = useState(initSnackbar);
+    const closeSnackbar = () => {
+        setSnackbar(initSnackbar);
+    };
+    const handleSetSnackbar = (message, severity) => {
+        setSnackbar(snackConstructor(message, severity));
+    };
     useEffect(() => {
         setCurrTitle(initTitle(props.title));
     }, [props.title]);
     useEffect(() => {
         setSectionName(initSectionName(props.sectionName));
     }, [props.sectionName]);
+    useEffect(() => {
+        setSections(props.sections);
+    }, [props.sections]);
 
     const handleSectionNameUpdate = () => {
         if (sectionName.curr !== sectionName.prev) {
@@ -62,8 +86,27 @@ export default function ProjectBar({ props }) {
             });
         }
     };
+    const addCallback = (response) => {
+        setSections([response, ...sections]);
+    };
+    const handleAddSection = (name) => {
+        const section = { name, project: props.id };
+        addSection(section, addCallback);
+    };
     const handleSectionNameChange = (e) => {
         setSectionName({ ...sectionName, curr: e.target.value });
+    };
+    const handleCloseAdd = (e) => {
+        e.stopPropagation();
+        setAddNewSection(false);
+    };
+    const deleteSection = (sectionId) => {
+        if (sections.length === 1) {
+            return handleSetSnackbar("Must have at least 1 section", "error");
+        }
+        deleteItem("projectSections", sectionId);
+        const removed = sections.filter((section) => section.id !== sectionId);
+        setSections(removed);
     };
     const handleUpdateTitle = () => {
         const currentTitle = currTitle.curr;
@@ -89,28 +132,56 @@ export default function ProjectBar({ props }) {
             onClick={toggleDrawer}
         >
             <ListItem
-                onClick={() => {
-                    console.log("add new section");
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setAddNewSection(true);
                 }}
                 button
             >
                 <ListItemIcon>
-                    <AddIcon />
+                    {addNewSection ? (
+                        <CloseIcon onClick={handleCloseAdd} />
+                    ) : (
+                        <AddIcon />
+                    )}
                 </ListItemIcon>
-                <ListItemText primary="Add Section" />
+                {addNewSection ? (
+                    <Input
+                        onKeyDown={(e) => {
+                            if (e.keyCode == 13) {
+                                handleAddSection(e.target.value);
+                            }
+                        }}
+                        inputProps={{
+                            style: {
+                                width: 120,
+                            },
+                        }}
+                    />
+                ) : (
+                    <ListItemText primary="Add Section" />
+                )}
             </ListItem>
             <Divider />
             <List>
-                {props.sections.map((section) => (
+                {sections.map((section) => (
                     <ListItem
                         className={classes.item}
                         onClick={() => {
                             if (section.i !== props.currentSection)
-                                props.setCurrentSection(section);
+                                props.handleSwitchSection(section.id);
                         }}
                         button
                         key={section.id}
                     >
+                        <ListItemIcon
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                deleteSection(section.id);
+                            }}
+                        >
+                            <DeleteForeverIcon />
+                        </ListItemIcon>
                         <ListItemText primary={section.name} />
                     </ListItem>
                 ))}
@@ -163,6 +234,16 @@ export default function ProjectBar({ props }) {
             <div
                 style={{ height: 56, width: "100%", background: "transparent" }}
             ></div>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={snackbar.show}
+                autoHideDuration={6000}
+                onClose={closeSnackbar}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbar.severity}>
+                    {snackbar.msg}
+                </Alert>
+            </Snackbar>
         </>
     );
 }

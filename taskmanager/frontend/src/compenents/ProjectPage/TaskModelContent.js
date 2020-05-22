@@ -9,19 +9,26 @@ import {
 } from "@material-ui/pickers";
 import Checkbox from "@material-ui/core/Checkbox";
 import { TextField } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 export default function TaskModelContent({
+    completeSubTask,
     addSubTask,
     task,
     handleClose,
     handleUpdate,
+    handleDelete,
 }) {
-    const tomorrow = new Date();
-    tomorrow.setDate(new Date().getDate() + 1);
-    const [selectedDate, setSelectedDate] = React.useState(tomorrow);
-    const [duedate, setDuedate] = useState(false);
+    const [duedate, setDuedate] = useState(task.due_date ? true : false);
     const [currentState, setcurrentState] = useState(task);
     const handleDueChecked = () => {
+        if (!duedate === false) {
+            setcurrentState({ ...currentState, duedate: null });
+            handleUpdate("due_date", null);
+        } else if (!currentState.duedate) {
+            const date = new Date().toISOString();
+            handleUpdate("due_date", date);
+        }
         setDuedate(!duedate);
     };
     const handleName = (e) => {
@@ -37,13 +44,16 @@ export default function TaskModelContent({
         }
     };
     const handleDateChange = (date) => {
-        setSelectedDate(date);
+        date = new Date(date).toISOString();
+        const updated = { ...currentState, duedate: date };
+        setcurrentState(updated);
+        handleUpdate("due_date", date);
     };
     const handleAddSub = (subTaskName) => {
-        const newTask = { id: task.id, name: subTaskName, completed: false };
+        const newTask = { task: task.id, name: subTaskName };
         addSubTask(newTask);
     };
-    const completeSubTask = () => {};
+
     return (
         <>
             <TextField
@@ -63,9 +73,18 @@ export default function TaskModelContent({
                 style={{ color: "black" }}
                 value={currentState.name}
                 style={{
-                    width: "90%",
+                    width: "80%",
                 }}
             />
+            <Button
+                onClick={handleDelete}
+                variant="contained"
+                style={{ marginLeft: 10 }}
+                color="secondary"
+            >
+                Delete
+            </Button>
+
             <IconButton
                 style={{ position: "absolute", top: 0, right: 0 }}
                 onClick={handleClose}
@@ -116,7 +135,7 @@ export default function TaskModelContent({
                             id="date-picker-dialog"
                             label="Date picker dialog"
                             format="MM/dd/yyyy"
-                            value={selectedDate}
+                            value={currentState.due_date || new Date()}
                             onChange={handleDateChange}
                             KeyboardButtonProps={{
                                 "aria-label": "change date",
@@ -147,7 +166,9 @@ export default function TaskModelContent({
                     return (
                         <div key={i}>
                             <Checkbox
-                                onChange={completeSubTask}
+                                onChange={() =>
+                                    completeSubTask(subTask.id, subTask.name)
+                                }
                                 checked={subTask.completed}
                             />
                             {subTask.name}

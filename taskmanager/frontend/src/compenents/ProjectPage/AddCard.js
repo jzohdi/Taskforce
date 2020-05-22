@@ -36,7 +36,7 @@ export default function AddCard({ props }) {
                 <Grow in={true} mountOnEnter unmountOnExit>
                     <Paper
                         elevation={4}
-                        style={{ zIndex: 1, position: "relative" }}
+                        style={{ zIndex: 1, position: "relative", height: 95 }}
                     >
                         <div>
                             <TextField
@@ -75,9 +75,11 @@ export default function AddCard({ props }) {
                     </Paper>
                 </Grow>
             ) : (
-                <AddCardButton onClick={addCard}>
-                    <AddIcon /> Add Card
-                </AddCardButton>
+                <div style={{ height: 95 }}>
+                    <AddCardButton onClick={addCard}>
+                        <AddIcon /> Add Card
+                    </AddCardButton>
+                </div>
             )}
         </div>
     );

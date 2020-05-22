@@ -12,8 +12,9 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import TaskModelContent from "./TaskModelContent";
 import Container from "@material-ui/core/Container";
-import { update } from "../../actions/tasks";
+import { update, create } from "../../actions/tasks";
 import { Tooltip } from "@material-ui/core";
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: "flex",
@@ -50,11 +51,39 @@ const handleUpdateServer = (taskState) => {
     const [id, task] = (({ subtasks, id, ...o }) => [id, o])(taskState);
     update("tasks", id, task);
 };
-export default function Task({ props, updateProgress }) {
+const colorGradient = (fadeFraction, rgbColor1, rgbColor2) => {
+    var color1 = rgbColor1;
+    var color2 = rgbColor2;
+    var fade = fadeFraction;
+
+    var diffRed = color2.red - color1.red;
+    var diffGreen = color2.green - color1.green;
+    var diffBlue = color2.blue - color1.blue;
+
+    var gradient = {
+        red: parseInt(Math.floor(color1.red + diffRed * fade), 10),
+        green: parseInt(Math.floor(color1.green + diffGreen * fade), 10),
+        blue: parseInt(Math.floor(color1.blue + diffBlue * fade), 10),
+    };
+
+    return (
+        "rgb(" + gradient.red + "," + gradient.green + "," + gradient.blue + ")"
+    );
+};
+const getDaysDiff = (day, today) => {
+    // To calculate the time difference of two dates
+    const Difference_In_Time = day.getTime() - today.getTime();
+    //To calculate the no. of days between two dates
+    return Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+};
+export default function Task({ props, updateProgress, deleteTask }) {
     const classes = useStyles();
     const [task, setTask] = useState(props);
     const [expand, setExpand] = useState(false);
     const [editTask, setEditTask] = useState(false);
+    useEffect(() => {
+        setTask(props);
+    }, [props]);
 
     const handleChange = (event) => {
         const action = event.target.checked ? 1 : -1;
@@ -68,9 +97,12 @@ export default function Task({ props, updateProgress }) {
         setTask(updated);
         handleUpdateServer(updated);
     };
-    const addSubTask = (subTaskJson) => {
-        task.subtasks.push(subTaskJson);
+    const addSubCallback = (response) => {
+        task.subtasks.push(response);
         setTask({ ...task });
+    };
+    const addSubTask = (subTaskJson) => {
+        create("subtasks", subTaskJson, addSubCallback);
     };
     const handleExpand = () => {
         setExpand(!expand);
@@ -81,6 +113,43 @@ export default function Task({ props, updateProgress }) {
     const handleEdit = () => {
         setEditTask(true);
     };
+    const completeSubTask = (id, name) => {
+        let completed = null;
+        const args = { task: task.id, name, completed: null };
+        task.subtasks = task.subtasks.map((subtask) => {
+            if (subtask.id === id) {
+                completed = !subtask.completed;
+                args.completed = completed;
+                subtask.completed = completed;
+            }
+            return subtask;
+        });
+        setTask({ ...task });
+        update("subtasks", id, args);
+    };
+    const decideBackgroundColor = (dueDate, completed) => {
+        if (!dueDate) return "#fff";
+        if (completed) return "#26a69a";
+        const days = new Date(dueDate);
+        const today = new Date();
+        if (days <= today) {
+            return "#b71c1c";
+        }
+        const differenceInDays = getDaysDiff(days, today);
+        // console.log("days", differenceInDays);
+        if (differenceInDays > 7) {
+            return "#fff59d";
+        }
+        const fract = 1 - differenceInDays / 7;
+        // console.log("fraction", fract);
+        const yellow = { red: 238, green: 255, blue: 65 };
+        const red = { red: 229, green: 115, blue: 115 };
+        return colorGradient(fract, yellow, red);
+    };
+    const handleDelete = () => {
+        setEditTask(false);
+        deleteTask(task);
+    };
     return (
         <>
             <Paper
@@ -89,6 +158,10 @@ export default function Task({ props, updateProgress }) {
                     display: "flex",
                     flexDirection: "column",
                     marginTop: 5,
+                    backgroundColor: decideBackgroundColor(
+                        task.due_date,
+                        task.completed
+                    ),
                 }}
             >
                 <div
@@ -131,7 +204,25 @@ export default function Task({ props, updateProgress }) {
                         </div>
                     ) : (
                         task.subtasks.map((subtask, i) => {
-                            return <div key={i}>{subtask.name}</div>;
+                            return (
+                                <div key={i} style={{ paddingLeft: "3vw" }}>
+                                    <Checkbox
+                                        onClick={() =>
+                                            completeSubTask(
+                                                subtask.id,
+                                                subtask.name
+                                            )
+                                        }
+                                        color="primary"
+                                        size="small"
+                                        checked={subtask.completed}
+                                        inputProps={{
+                                            "aria-label": "sub task check box",
+                                        }}
+                                    />
+                                    {subtask.name}
+                                </div>
+                            );
                         })
                     )}
                 </Collapse>
@@ -152,6 +243,8 @@ export default function Task({ props, updateProgress }) {
                     <Container maxWidth="lg">
                         <div className={classes.paper}>
                             <TaskModelContent
+                                handleDelete={handleDelete}
+                                completeSubTask={completeSubTask}
                                 addSubTask={addSubTask}
                                 task={task}
                                 handleClose={handleClose}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -25,7 +25,7 @@ const getProgress = (tasksArray) => {
     return { completed, total: totalTasks };
 };
 
-export default function ListCard({ list }) {
+export default function ListCard({ list, makeSnacks }) {
     const [listState, setListState] = useState(list);
     const [addNew, setAddNew] = useState(false);
     const [currentName, setCurrentName] = useState(list.name);
@@ -41,6 +41,9 @@ export default function ListCard({ list }) {
             });
         }
     };
+    useEffect(() => {
+        setListState(list);
+    }, [list]);
     const handleNameChange = (e) => {
         setCurrentName(e.target.value);
     };
@@ -75,6 +78,24 @@ export default function ListCard({ list }) {
     const handleDeleteList = () => {
         setDeleted(true);
         deleteItem("sectionlists", list.id);
+    };
+    const deleteCallback = (taskId) => {
+        const newTasks = listState.tasks.filter((task) => task.id !== taskId);
+        setListState({ ...listState, tasks: newTasks });
+    };
+    const deleteTask = (taskJson) => {
+        deleteItem("tasks", taskJson.id)
+            .then(() => {
+                console.log(`${dbItem}, id: ${id} deleted`);
+                deleteCallback(taskJson.id);
+            })
+            .catch((err) => {
+                makeSnacks({
+                    show: true,
+                    severity: "error",
+                    msg: "Failed to delete.",
+                });
+            });
     };
     return deleted ? (
         <div></div>
@@ -167,6 +188,7 @@ export default function ListCard({ list }) {
                             {listState.tasks.map((task, i) => {
                                 return (
                                     <Task
+                                        deleteTask={deleteTask}
                                         updateProgress={updateProgress}
                                         key={task.id}
                                         props={task}

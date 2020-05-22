@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Redirect } from "react-router-dom";
-import { getProject, addList } from "../../actions/tasks";
+import { getProject, addList, retrieve } from "../../actions/tasks";
 import ListCard from "../ProjectPage/ListCard";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -27,7 +27,9 @@ const snackConstructor = (msg, severity) => {
 export default function ProjectPage() {
     const { id } = useParams();
     const [project, setProject] = useState(initProject);
-    const [currentSection, setCurrentSection] = useState(0);
+    const [currentSection, setCurrentSection] = useState(
+        initProject.sections[0]
+    );
     const [snackbar, setSnackbar] = useState(initSnackbar);
     let isMounted = useRef(true);
 
@@ -36,29 +38,31 @@ export default function ProjectPage() {
     };
     const handleCallback = (project) => {
         if (isMounted) {
+            console.log(project);
             setProject(project);
+            setCurrentSection(project.sections[0]);
         }
     };
     const getLists = () => {
-        return project.sections[currentSection].lists.sort(
-            (a, b) => a.position - b.position
-        );
+        // console.log("get lists");
+        return currentSection.lists.sort((a, b) => a.position - b.position);
     };
     const handleSetSnackbar = (message, severity) => {
         setSnackbar(snackConstructor(message, severity));
     };
     const handleAddList = (listName) => {
-        const section = project.sections[currentSection];
-        if (section.lists.some((list) => list.name === listName)) {
-            return handleSetSnackbar(
-                "Card of this name already exists",
-                "error"
-            );
-        }
+        const section = { ...currentSection };
+        // if (section.lists.some((list) => list.name === listName)) {
+        //     return handleSetSnackbar(
+        //         "Card of this name already exists",
+        //         "error"
+        //     );
+        // }
         const id = section.id;
         const newList = { name: listName, tasks: [] };
         section.lists.unshift(newList);
-        setProject({ ...project });
+        // setProject({ ...project });
+        setCurrentSection(section);
         addList(id, listName);
     };
     useEffect(() => {
@@ -76,7 +80,20 @@ export default function ProjectPage() {
             ).style.background = `linear-gradient(45deg, ${project.background}, 60%, #70aae0 90%)`;
         }
     }, [project]);
-
+    const callback = (data) => {
+        console.log(data);
+        setCurrentSection(data);
+    };
+    const handleSwitchSection = (targetSectionId) => {
+        const section = project.sections.find((section) => {
+            return section.id === targetSectionId;
+        });
+        setCurrentSection(section);
+        retrieve("projectSections", targetSectionId, callback);
+    };
+    const makeSnacks = (args) => {
+        setSnackbar(args);
+    };
     return !project.title ? (
         <Redirect to="/" />
     ) : (
@@ -96,19 +113,37 @@ export default function ProjectPage() {
                     title: project.title,
                     background: project.background,
                     currentSection,
-                    sectionName: project.sections[currentSection].name,
-                    sectionId: project.sections[currentSection].id,
-                    setCurrentSection,
+                    sectionName: currentSection.name,
+                    sectionId: currentSection.id,
+                    handleSwitchSection,
                     sections: project.sections.map((x, i) => {
                         return { name: x.name, i: i, id: x.id };
                     }),
                 }}
             />
             <div className="tasksSection">
-                <AddCard props={{ handleAddList }} />
-                {getLists().map((list, i) => {
-                    return <ListCard key={list.id} list={list} />;
-                })}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <AddCard props={{ handleAddList }} />
+                    <div
+                        style={{
+                            marginTop: 16,
+                            height: "calc(100vh - 275px)",
+                            borderRadius: 5,
+                            backgroundColor: "rgba(0, 0, 0, 0.4)",
+                        }}
+                    ></div>
+                </div>
+                {currentSection.lists
+                    .sort((a, b) => a.position - b.position)
+                    .map((list, i) => {
+                        return (
+                            <ListCard
+                                key={list.id}
+                                list={list}
+                                makeSnacks={makeSnacks}
+                            />
+                        );
+                    })}
             </div>
             <Snackbar
                 open={snackbar.show}

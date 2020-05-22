@@ -130,12 +130,26 @@ export const addProject = (args, dispatch, callback) => {
     }
 };
 
+export const addSection = (args, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .post("/api/projectSections/", body, config)
+            .then((res) => {
+                callback(res.data);
+            })
+            .catch((err) => {});
+    }
+};
+
 export const deleteProject = (args, dispatch) => {
     const config = getTokenHeader();
     if (!config) {
         console.error("No token present.");
     } else {
-        console.log("got here");
         axios
             .delete("/api/projects/" + args + "/", config)
             .then((res) => {
@@ -143,6 +157,40 @@ export const deleteProject = (args, dispatch) => {
                     type: DELETE_PROJECT,
                     payload: args,
                 });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+};
+
+export const create = (dbItem, args, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .post(`/api/${dbItem}/`, body, config)
+            .then((res) => {
+                callback(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+};
+
+export const retrieve = (dbItem, id, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .get(`/api/${dbItem}/${id}/`, config)
+            .then((res) => {
+                console.error("returned");
+                callback(res.data);
             })
             .catch((err) => {
                 console.error(err);
@@ -172,13 +220,9 @@ export const deleteItem = (dbItem, id) => {
     if (!config) {
         console.error("No token present.");
     } else {
-        axios
-            .delete(`/api/${dbItem}/${id}/`, config)
-            .then((_) => {
-                console.log(`${dbItem}, id: ${id} deleted`);
-            })
-            .catch((err) => {
-                console.error(`update ${dbItem} error `, err);
-            });
+        return axios.delete(`/api/${dbItem}/${id}/`, config).catch((err) => {
+            console.error(`update ${dbItem} error `, err);
+            throw err;
+        });
     }
 };
