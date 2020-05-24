@@ -19,21 +19,15 @@ function App() {
                 <Router>
                     <Header />
                     <CssBaseline />
-                    <Container maxWidth="lg">
-                        <Switch>
-                            <PrivateRoute
-                                exact
-                                path="/"
-                                component={Dashboard}
-                            />
-                            <PrivateRoute
-                                path="/project/:id"
-                                component={ProjectPage}
-                            />
-                            <Route path="/register" component={Register} />
-                            <Route path="/login" component={Login} />
-                        </Switch>
-                    </Container>
+                    <Switch>
+                        <PrivateRoute exact path="/" component={Dashboard} />
+                        <PrivateRoute
+                            path="/project/:id"
+                            component={ProjectPage}
+                        />
+                        <Route path="/register" component={Register} />
+                        <Route path="/login" component={Login} />
+                    </Switch>
                 </Router>
             </ProjectProvider>
         </AuthProvider>

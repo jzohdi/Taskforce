@@ -10,6 +10,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import loginFields from "./loginFields";
+import Container from "@material-ui/core/Container";
 
 const initialState = {
     username: "",
@@ -51,24 +52,26 @@ export default function Login() {
     return authState.isAuthenticated ? (
         <Redirect to="/" />
     ) : (
-        <div style={{ textAlign: "-webkit-center" }}>
-            <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                open={error.show}
-                onClose={handleCloseError}
-                message={error.msg}
-                action={
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={handleCloseError}
-                    >
-                        <CloseIcon fontSize="small" />
-                    </IconButton>
-                }
-            />
-            <InputForm props={loginFields} />
-        </div>
+        <Container maxWidth="lg">
+            <div style={{ textAlign: "-webkit-center" }}>
+                <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={error.show}
+                    onClose={handleCloseError}
+                    message={error.msg}
+                    action={
+                        <IconButton
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={handleCloseError}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    }
+                />
+                <InputForm props={loginFields} />
+            </div>
+        </Container>
     );
 }

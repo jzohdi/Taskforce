@@ -10,6 +10,7 @@ import {
     AuthStateContext,
 } from "../../contexts/authContext";
 import { register } from "../../actions/auth";
+import Container from "@material-ui/core/Container";
 
 const initialState = {
     username: "",
@@ -52,24 +53,26 @@ export default function Register() {
     return authState.isAuthenticated ? (
         <Redirect to="/" />
     ) : (
-        <div style={{ textAlign: "-webkit-center" }}>
-            <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                open={error.show}
-                onClose={handleCloseError}
-                message={error.msg}
-                action={
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={handleCloseError}
-                    >
-                        <CloseIcon fontSize="small" />
-                    </IconButton>
-                }
-            />
-            <InputFrom props={registerForm} />
-        </div>
+        <Container maxWidth="lg">
+            <div style={{ textAlign: "-webkit-center" }}>
+                <Snackbar
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    open={error.show}
+                    onClose={handleCloseError}
+                    message={error.msg}
+                    action={
+                        <IconButton
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={handleCloseError}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    }
+                />
+                <InputFrom props={registerForm} />
+            </div>
+        </Container>
     );
 }

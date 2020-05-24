@@ -27,30 +27,73 @@ body {
     display: flex;
     flex-direction: row;
 }
-.card-list {
-    overflow-x: scroll;
-    background-color: #ebecf0;
-    width: 220px;
-    padding: 5px;
-    max-height: calc(100vh - 155px);
+.card-list-less {
+    overflow: hidden;
 }
-.card-list::-webkit-scrollbar {
+.card-list {
+    background-color: #ebecf0;
+    /* min-width: 220px; */
+    padding: 5px;
+}
+.card-list-container {
+    overflow-x: auto;
+    max-height: calc(100vh - 280px);
+}
+.card-list-container::-webkit-scrollbar {
     width: 5px;
 }
 
 /* Track */
-.card-list::-webkit-scrollbar-track {
+.card-list-container::-webkit-scrollbar-track {
     width: 5px;
     box-shadow: inset 0 0 5px rgb(255, 255, 255);
     border-radius: 7px;
 }
 
 /* Handle */
-.card-list::-webkit-scrollbar-thumb {
+.card-list-container::-webkit-scrollbar-thumb {
     background: rgb(165, 156, 165);
     border-radius: 10px;
 }
 
+/* ======================= Task styles ================================ */
+.task-title-style {
+    padding-left: 10px;
+    font-size: 1.2em;
+    cursor: default;
+}
+.notes-box {
+    overflow-x: auto;
+    width: 100%;
+    height: calc(100vh - 365px);
+    display: flex;
+    flex-flow: column-reverse;
+}
+.notes-box::-webkit-scrollbar {
+    width: 5px;
+}
+.note {
+    max-width: 310px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background-color: #eaeaea;
+    padding: 10px;
+    word-wrap: break-word;
+}
+/* Track */
+.notes-box::-webkit-scrollbar-track {
+    width: 5px;
+    box-shadow: inset 0 0 5px rgb(255, 255, 255);
+    border-radius: 7px;
+}
+
+/* Handle */
+.notes-box::-webkit-scrollbar-thumb {
+    background: rgb(165, 156, 165);
+    border-radius: 10px;
+}
+/*======================= END TASK STYLES ============================ */
 @media only screen and (min-width: 320px) and (max-width: 479px) {
     /*  */
 }

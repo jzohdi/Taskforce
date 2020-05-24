@@ -45,7 +45,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class SectionListViewSet(viewsets.ModelViewSet):
-    queryset = SectionList.objects.all().order_by("position")
+    queryset = SectionList.objects.all()
     permission_classes = [
         permissions.AllowAny
     ]
@@ -63,11 +63,13 @@ class SectionListViewSet(viewsets.ModelViewSet):
 
 
 class ProjectNotesViewSet(viewsets.ModelViewSet):
-    queryset = ProjectNotes.objects.all()
     permission_classes = [
         permissions.AllowAny
     ]
     serializer_class = projectnotesserializer
+
+    def get_queryset(self):
+        return ProjectNotes.objects.all().order_by("-created_at")
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

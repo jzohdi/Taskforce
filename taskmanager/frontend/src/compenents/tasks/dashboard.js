@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ProjectContext } from "../../contexts/tasksContext";
-import { getProjects } from "../../actions/tasks";
+import { getProjects, deleteProject } from "../../actions/tasks";
 import ProjectCard from "./ProjectCard";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -9,6 +9,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import { NewProjectCard } from "./NewProjectCard";
 import { addProject } from "../../actions/tasks";
 import { useHistory } from "react-router-dom";
+import Container from "@material-ui/core/Container";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,12 +24,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 const initialSnackbar = { show: false, message: "" };
-
+const initDialog = {
+    show: false,
+    projectName: "",
+    projectId: null,
+};
 export default function Dashboard() {
     const [state, dispatch] = useContext(ProjectContext);
     const [snackBar, setSnackBar] = useState({ initialSnackbar });
     const classes = useStyles();
     const history = useHistory();
+
+    const [dialog, setDialog] = useState(initDialog);
+
+    const handleClose = () => {
+        setDialog(initDialog);
+    };
 
     const addCallBack = (args) => {
         console.log(args);
@@ -42,7 +59,13 @@ export default function Dashboard() {
         }
         addProject({ title, background }, dispatch, addCallBack);
     }, []);
-
+    const openDeleteDialog = (projectId, projectName) => {
+        setDialog({ show: true, projectName, projectId });
+    };
+    const handleDelete = () => {
+        deleteProject(dialog.projectId, dispatch);
+        setDialog(initDialog);
+    };
     const closeSnackBar = () => {
         setSnackBar(initialSnackbar);
     };
@@ -51,7 +74,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <>
+        <Container maxWidth="lg">
             <h1>Projects</h1>
             <div className={classes.root}>
                 <NewProjectCard createProject={createProject} />
@@ -59,7 +82,12 @@ export default function Dashboard() {
                     return (
                         <ProjectCard
                             key={project.id}
-                            props={{ history, id: project.id, ...project }}
+                            props={{
+                                history,
+                                id: project.id,
+                                ...project,
+                                openDeleteDialog,
+                            }}
                         />
                     );
                 })}
@@ -84,6 +112,29 @@ export default function Dashboard() {
                     </IconButton>
                 }
             />
-        </>
+            <Dialog
+                open={dialog.show}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+            >
+                <DialogTitle id="responsive-dialog-title">
+                    {"Delete Project"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete {dialog.projectName}{" "}
+                        permanently?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={handleClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDelete} color="primary" autoFocus>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Container>
     );
 }

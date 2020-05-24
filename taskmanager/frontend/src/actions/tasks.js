@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { GET_TASKS, GET_PROJECTS, ADD_PROJECT, DELETE_PROJECT } from "./types";
+import ProjectBar from "../compenents/ProjectPage/ProjectBar";
 
 const getTokenHeader = () => {
     const token = localStorage.getItem("token");
@@ -129,6 +130,21 @@ export const addProject = (args, dispatch, callback) => {
     }
 };
 
+export const addSection = (args, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        axios
+            .post("/api/projectSections/", body, config)
+            .then((res) => {
+                callback(res.data);
+            })
+            .catch((err) => {});
+    }
+};
+
 export const deleteProject = (args, dispatch) => {
     const config = getTokenHeader();
     if (!config) {
@@ -148,19 +164,61 @@ export const deleteProject = (args, dispatch) => {
     }
 };
 
-export const updateList = (id, args) => {
+export const create = (dbItem, args) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        const body = JSON.stringify(args);
+        return axios.post(`/api/${dbItem}/`, body, config).catch((err) => {
+            console.error(err);
+            throw err;
+        });
+    }
+};
+
+export const retrieve = (dbItem, id, callback) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        axios
+            .get(`/api/${dbItem}/${id}/`, config)
+            .then((res) => {
+                // console.error("returned");
+                callback(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+};
+
+export const update = (dbItem, id, args) => {
     const config = getTokenHeader();
     if (!config) {
         console.error("No token present.");
     } else {
         const body = JSON.stringify(args);
         axios
-            .put(`/api/sectionlists/${id}/`, body, config)
+            .put(`/api/${dbItem}/${id}/`, body, config)
             .then((res) => {
-                console.log("list updated");
+                console.log(`${dbItem} updated`);
             })
             .catch((err) => {
-                console.error("update list error ", err);
+                console.error(`update ${dbItem} error `, err);
             });
+    }
+};
+
+export const deleteItem = (dbItem, id) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        return axios.delete(`/api/${dbItem}/${id}/`, config).catch((err) => {
+            console.error(`update ${dbItem} error `, err);
+            throw err;
+        });
     }
 };

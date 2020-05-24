@@ -5,12 +5,19 @@
 -   [x] create task api
 -   [x] set up react
 -   [x] add projects CRUD
--   [ ] display projects
--   [ ] click on projects to display project view
--   [ ] default project section is main
--   [ ] add tasks to project section
+-   [x] display projects
+-   [x] click on projects to display project view
+-   [x] set up authentication
+-   [x] default project section is main
+-   [x] add card to project section
+-   [x] add tasks to project section card
+-   [ ] be able to edit task (set due date, description, sub tasks)
 -   [ ] add separate sub sections in project
--   [ ] set up login
+-   [ ] be able to change positions of cards
+-   [ ] be able to change positions of tasks
+-   [ ] be able to complete a task
+-   [ ] be able to complete sub tasks
+-   [ ] add notes to project
 
 ## important commands
 
