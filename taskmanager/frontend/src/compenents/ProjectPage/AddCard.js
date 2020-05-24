@@ -11,8 +11,8 @@ const AddCardButton = withStyles((theme) => ({
     root: {
         color: "white",
         backgroundColor: "#ffffff47",
-        width: 290,
-        minWidth: 290,
+        width: 312,
+        minWidth: 312,
         borderRadius: 5,
         "&:hover": {
             backgroundColor: "#0000004a",

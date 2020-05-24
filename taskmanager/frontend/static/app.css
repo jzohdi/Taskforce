@@ -62,7 +62,37 @@ body {
     font-size: 1.2em;
     cursor: default;
 }
+.notes-box {
+    overflow-x: auto;
+    width: 100%;
+    height: calc(100vh - 365px);
+    display: flex;
+    flex-flow: column-reverse;
+}
+.notes-box::-webkit-scrollbar {
+    width: 5px;
+}
+.note {
+    max-width: 310px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    background-color: #eaeaea;
+    padding: 10px;
+    word-wrap: break-word;
+}
+/* Track */
+.notes-box::-webkit-scrollbar-track {
+    width: 5px;
+    box-shadow: inset 0 0 5px rgb(255, 255, 255);
+    border-radius: 7px;
+}
 
+/* Handle */
+.notes-box::-webkit-scrollbar-thumb {
+    background: rgb(165, 156, 165);
+    border-radius: 10px;
+}
 /*======================= END TASK STYLES ============================ */
 @media only screen and (min-width: 320px) and (max-width: 479px) {
     /*  */

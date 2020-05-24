@@ -164,20 +164,16 @@ export const deleteProject = (args, dispatch) => {
     }
 };
 
-export const create = (dbItem, args, callback) => {
+export const create = (dbItem, args) => {
     const config = getTokenHeader();
     if (!config) {
         console.error("No token present.");
     } else {
         const body = JSON.stringify(args);
-        axios
-            .post(`/api/${dbItem}/`, body, config)
-            .then((res) => {
-                callback(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        return axios.post(`/api/${dbItem}/`, body, config).catch((err) => {
+            console.error(err);
+            throw err;
+        });
     }
 };
 
@@ -189,7 +185,7 @@ export const retrieve = (dbItem, id, callback) => {
         axios
             .get(`/api/${dbItem}/${id}/`, config)
             .then((res) => {
-                console.error("returned");
+                // console.error("returned");
                 callback(res.data);
             })
             .catch((err) => {

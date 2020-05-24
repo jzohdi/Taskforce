@@ -102,7 +102,13 @@ export default function Task({ props, updateProgress, deleteTask }) {
         setTask({ ...task });
     };
     const addSubTask = (subTaskJson) => {
-        create("subtasks", subTaskJson, addSubCallback);
+        create("subtasks", subTaskJson)
+            .then((res) => {
+                addSubCallback(res.data);
+            })
+            .catch((err) => {
+                console.error("error in Task.js caught addSubTask");
+            });
     };
     const handleExpand = () => {
         setExpand(!expand);

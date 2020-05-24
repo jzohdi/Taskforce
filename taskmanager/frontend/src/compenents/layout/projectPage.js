@@ -7,7 +7,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import ProjectBar from "../ProjectPage/ProjectBar";
 import AddCard from "../ProjectPage/AddCard";
-
+import Notes from "../ProjectPage/Notes";
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -16,6 +16,7 @@ const initProject = {
     title: "Blank",
     background: "#b7b7b7",
     sections: [{ id: 0, name: "main", lists: [] }],
+    notes: [],
 };
 
 const initSnackbar = { show: false, severity: "info", msg: "" };
@@ -124,14 +125,10 @@ export default function ProjectPage() {
             <div className="tasksSection">
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <AddCard props={{ handleAddList }} />
-                    <div
-                        style={{
-                            marginTop: 16,
-                            height: "calc(100vh - 275px)",
-                            borderRadius: 5,
-                            backgroundColor: "rgba(0, 0, 0, 0.4)",
-                        }}
-                    ></div>
+                    <Notes
+                        projectNotes={project.notes}
+                        projectId={project.id}
+                    />
                 </div>
                 {currentSection.lists
                     .sort((a, b) => a.position - b.position)

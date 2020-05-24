@@ -10,7 +10,7 @@ import Task from "./Task";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Tooltip from "@material-ui/core/Tooltip";
-import { addTask, update, deleteItem } from "../../actions/tasks";
+import { create, update, deleteItem } from "../../actions/tasks";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 const getProgress = (tasksArray) => {
@@ -57,12 +57,19 @@ export default function ListCard({ list, makeSnacks }) {
         setListState({ ...listState, tasks: newTaskList });
     };
     const handleCreateTask = () => {
-        const name = document.getElementById("new-task-name").value;
+        const name = document.getElementById(`new-task-name${listState.id}`)
+            .value;
         if (name === "") {
             return;
         }
         const section_list = listState.id;
-        addTask({ name, section_list }, handleCallback);
+        create("tasks", { name, section_list })
+            .then((res) => {
+                handleCallback(res.data);
+            })
+            .catch((err) => {
+                console.error("catch error in list card", err);
+            });
     };
     const expandLess = () => {
         setExpand(false);
@@ -86,7 +93,6 @@ export default function ListCard({ list, makeSnacks }) {
     const deleteTask = (taskJson) => {
         deleteItem("tasks", taskJson.id)
             .then(() => {
-                console.log(`${dbItem}, id: ${id} deleted`);
                 deleteCallback(taskJson.id);
             })
             .catch((err) => {
@@ -197,29 +203,42 @@ export default function ListCard({ list, makeSnacks }) {
                                 );
                             })}
                             {addNew && (
-                                <div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        placeItems: "flex-end",
+                                    }}
+                                >
                                     <TextField
                                         style={{
                                             marginTop: 10,
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.keyCode === 13) {
+                                                handleCreateTask();
+                                            }
                                         }}
                                         autoFocus={true}
                                         size="small"
                                         variant="outlined"
                                         label="new task name"
                                         InputProps={{
-                                            id: "new-task-name",
+                                            id: `new-task-name${listState.id}`,
                                         }}
                                     />
-                                    <div style={{ textAlign: "right" }}>
+                                    <Button
+                                        color="secondary"
+                                        onClick={handleAddTask}
+                                    >
+                                        <CancelIcon />
+                                    </Button>
+                                    {/* <div style={{ textAlign: "right" }}>
                                         <ButtonGroup>
                                             <Button onClick={handleCreateTask}>
                                                 <AddCircleOutlineIcon />
                                             </Button>
-                                            <Button onClick={handleAddTask}>
-                                                <CancelIcon />
-                                            </Button>
                                         </ButtonGroup>
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
                         </div>

@@ -63,11 +63,13 @@ class SectionListViewSet(viewsets.ModelViewSet):
 
 
 class ProjectNotesViewSet(viewsets.ModelViewSet):
-    queryset = ProjectNotes.objects.all()
     permission_classes = [
         permissions.AllowAny
     ]
     serializer_class = projectnotesserializer
+
+    def get_queryset(self):
+        return ProjectNotes.objects.all().order_by("-created_at")
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
