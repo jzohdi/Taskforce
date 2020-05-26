@@ -21,7 +21,7 @@
 
 ## important commands
 
-    instal pipenv using powershell admin
+    install pipenv using powershell admin
     pipenv shell
     pipenv install django djangorestframework django-rest-knox
     django-admin startproject taskmanager
