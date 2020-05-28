@@ -182,15 +182,10 @@ export const retrieve = (dbItem, id, callback) => {
     if (!config) {
         console.error("No token present.");
     } else {
-        axios
-            .get(`/api/${dbItem}/${id}/`, config)
-            .then((res) => {
-                // console.error("returned");
-                callback(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        return axios.get(`/api/${dbItem}/${id}/`, config).catch((err) => {
+            console.error(err);
+            throw err;
+        });
     }
 };
 

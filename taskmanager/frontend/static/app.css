@@ -37,7 +37,7 @@ body {
 }
 .card-list-container {
     overflow-x: auto;
-    max-height: calc(100vh - 280px);
+    max-height: calc(100vh - 270px);
 }
 .card-list-container::-webkit-scrollbar {
     width: 5px;

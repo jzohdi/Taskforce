@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tasks.models import Task, Project, ProjectSection, ProjectNotes, SectionList, SubTask
+from tasks.models import Task, Project, ProjectSection, ProjectNotes, SectionList, SubTask, UserProjectMapping
 from django.db.models import F
 
 

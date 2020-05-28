@@ -52,7 +52,7 @@ export default function AddCard({ props }) {
                                 variant="outlined"
                                 style={{
                                     margin: "10px 5px 5px 5px",
-                                    width: 280,
+                                    width: 302,
                                 }}
                             />
                         </div>
