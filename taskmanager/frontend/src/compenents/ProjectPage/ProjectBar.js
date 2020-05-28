@@ -16,6 +16,7 @@ import {
     deleteItem,
     retrieve,
     create,
+    deleteMember,
 } from "../../actions/tasks";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -84,7 +85,6 @@ export default function ProjectBar({ props }) {
     const [members, setMembers] = useState([]);
     const [openMembers, setOpenMembers] = useState(false);
     const [addMember, setAddMember] = useState(false);
-    const openDialog = () => {};
 
     useEffect(() => {
         if (props.projectId !== undefined) {
@@ -97,6 +97,7 @@ export default function ProjectBar({ props }) {
                 });
         }
     }, [props]);
+
     const handleCloseDialog = () => {
         setOpenMembers(false);
     };
@@ -131,7 +132,20 @@ export default function ProjectBar({ props }) {
         };
         create("members", body)
             .then((res) => {
-                setMembers([...members, username]);
+                console.log(res.data);
+                setMembers([...members, res.data.data]);
+            })
+            .catch((error) => {
+                props.handleSetSnackbar(error.response.data.error, "error");
+            });
+    };
+    const removeUser = (username) => {
+        deleteMember(props.projectId, { username })
+            .then(() => {
+                const mems = members.filter(
+                    (member) => member.username !== username
+                );
+                setMembers(mems);
             })
             .catch((error) => {
                 props.handleSetSnackbar(error.response.data.error, "error");
@@ -312,13 +326,18 @@ export default function ProjectBar({ props }) {
                 </DialogTitle>
                 <List>
                     {members.map((member) => (
-                        <ListItem button key={member}>
+                        <ListItem button key={member.id}>
                             <ListItemAvatar>
                                 <Avatar className={classes.avatar}>
                                     <PersonIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary={member} />
+                            <ListItemText primary={member.username} />
+                            <IconButton
+                                onClick={() => removeUser(member.username)}
+                            >
+                                <DeleteForeverIcon />
+                            </IconButton>
                         </ListItem>
                     ))}
                     {addMember ? (

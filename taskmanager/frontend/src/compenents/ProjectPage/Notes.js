@@ -5,8 +5,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { create } from "../../actions/tasks";
 import Note from "./Note";
 
+const sortNotes = (notes) => {
+    return notes.sort((a, b) => b.id - a.id);
+};
 export default function Notes({ projectNotes, projectId }) {
-    const [notes, setNotes] = useState(projectNotes);
+    const [notes, setNotes] = useState(sortNotes(projectNotes));
     const [newNote, setNewNote] = useState("");
     const handleOnChange = (e) => {
         setNewNote(e.target.value);
@@ -15,7 +18,7 @@ export default function Notes({ projectNotes, projectId }) {
         setNewNote("");
     };
     useEffect(() => {
-        setNotes(projectNotes.reverse());
+        setNotes(sortNotes(projectNotes));
     }, [projectNotes]);
     const handleAddNote = () => {
         const note = { project: projectId, note: newNote };

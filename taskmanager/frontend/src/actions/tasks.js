@@ -217,3 +217,15 @@ export const deleteItem = (dbItem, id) => {
         });
     }
 };
+export const deleteMember = (id, args) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        config.data = JSON.stringify(args);
+        return axios.delete(`/api/members/${id}/`, config).catch((err) => {
+            console.error(`delete member error `, err);
+            throw err;
+        });
+    }
+};

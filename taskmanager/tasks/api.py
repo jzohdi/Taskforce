@@ -74,7 +74,7 @@ class ProjectNotesViewSet(viewsets.ModelViewSet):
     serializer_class = projectnotesserializer
 
     def get_queryset(self):
-        return ProjectNotes.objects.all().order_by("-created_at")
+        return ProjectNotes.objects.all().order_by("id")
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -145,15 +145,17 @@ class AddMemberViewSet(viewsets.ViewSet):
         # check if user already in permissions
         if UserProjectMapping.objects.get(username=username).project.filter(id=project).count() != 0:
             return JsonResponse({"error": "User already added to project."}, status=400)
-        UserProjectMapping.objects.get(
-            username=username).project.add(db_project)
-        return JsonResponse({"data": f"{username} added"}, status=200)
+        mapping = UserProjectMapping.objects.get(
+            username=username)
+        mapping.project.add(db_project)
+        return JsonResponse({"data": {"username": username, "id": mapping.id}}, status=200)
 
     def retrieve(self, request, pk=None):
         if Project.objects.filter(id=pk).count() == 0:
             return JsonResponse({"error": "Invalid project"}, status=400)
         members = UserProjectMapping.objects.filter(project=16)
-        members = [member.username for member in members]
+        members = [{"username": member.username, "id": member.id}
+                   for member in members]
         return JsonResponse({"data": members}, status=200)
 
     def update(self, request, pk=None):
@@ -163,4 +165,16 @@ class AddMemberViewSet(viewsets.ViewSet):
         return JsonResponse({"data": "Invalid method"}, status=503)
 
     def destroy(self, request, pk=None):
-        return JsonResponse({"data": "list endpoint"}, status=200)
+        if not pk:
+            return JsonResponse({"error": "no key provided"}, status=400)
+        username = request.data.get("username", None)
+        if not username:
+            return JsonResponse({"error": "username field required"}, status=400)
+        if User.objects.filter(username=username).count() == 0:
+            return JsonResponse({"error": "username does not exist"}, status=400)
+        user = User.objects.get(username=username)
+        if Project.objects.get(id=pk).owner == user:
+            return JsonResponse({"error": "Cannot remove owner of project."}, status=400)
+        mapping = UserProjectMapping.objects.get(
+            username=username).project.remove(pk)
+        return JsonResponse({"data": "User removed"}, status=200)
