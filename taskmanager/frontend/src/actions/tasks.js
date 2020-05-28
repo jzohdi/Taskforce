@@ -182,15 +182,10 @@ export const retrieve = (dbItem, id, callback) => {
     if (!config) {
         console.error("No token present.");
     } else {
-        axios
-            .get(`/api/${dbItem}/${id}/`, config)
-            .then((res) => {
-                // console.error("returned");
-                callback(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        return axios.get(`/api/${dbItem}/${id}/`, config).catch((err) => {
+            console.error(err);
+            throw err;
+        });
     }
 };
 
@@ -218,6 +213,18 @@ export const deleteItem = (dbItem, id) => {
     } else {
         return axios.delete(`/api/${dbItem}/${id}/`, config).catch((err) => {
             console.error(`update ${dbItem} error `, err);
+            throw err;
+        });
+    }
+};
+export const deleteMember = (id, args) => {
+    const config = getTokenHeader();
+    if (!config) {
+        console.error("No token present.");
+    } else {
+        config.data = JSON.stringify(args);
+        return axios.delete(`/api/members/${id}/`, config).catch((err) => {
+            console.error(`delete member error `, err);
             throw err;
         });
     }

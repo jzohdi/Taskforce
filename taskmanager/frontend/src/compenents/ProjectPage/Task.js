@@ -135,19 +135,17 @@ export default function Task({ props, updateProgress, deleteTask }) {
     };
     const decideBackgroundColor = (dueDate, completed) => {
         if (!dueDate) return "#fff";
-        if (completed) return "#26a69a";
+        if (completed) return "#009688";
         const days = new Date(dueDate);
         const today = new Date();
         if (days <= today) {
             return "#b71c1c";
         }
         const differenceInDays = getDaysDiff(days, today);
-        // console.log("days", differenceInDays);
         if (differenceInDays > 7) {
             return "#fff59d";
         }
         const fract = 1 - differenceInDays / 7;
-        // console.log("fraction", fract);
         const yellow = { red: 238, green: 255, blue: 65 };
         const red = { red: 229, green: 115, blue: 115 };
         return colorGradient(fract, yellow, red);

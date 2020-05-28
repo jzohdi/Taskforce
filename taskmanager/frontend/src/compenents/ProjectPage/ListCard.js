@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
-import { TextField, ButtonGroup, IconButton } from "@material-ui/core";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import { TextField, IconButton } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import AddIcon from "@material-ui/icons/Add";
 import Task from "./Task";
@@ -232,13 +231,6 @@ export default function ListCard({ list, makeSnacks }) {
                                     >
                                         <CancelIcon />
                                     </Button>
-                                    {/* <div style={{ textAlign: "right" }}>
-                                        <ButtonGroup>
-                                            <Button onClick={handleCreateTask}>
-                                                <AddCircleOutlineIcon />
-                                            </Button>
-                                        </ButtonGroup>
-                                    </div> */}
                                 </div>
                             )}
                         </div>

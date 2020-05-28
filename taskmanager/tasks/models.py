@@ -10,6 +10,9 @@ class Project(models.Model):
     owner = models.ForeignKey(User,
                               related_name="projects", on_delete=models.CASCADE,
                               null=True)
+    # owners = models.ManyToManyField(User,
+    #                                 related_name="projects",
+    #                                 null=True)
 
     def __str__(self):
         return self.title
@@ -73,3 +76,8 @@ class SubTask(models.Model):
     )
     name = models.CharField(max_length=150, blank=False)
     completed = models.BooleanField(default=False)
+
+
+class UserProjectMapping(models.Model):
+    username = models.CharField(max_length=150, blank=False)
+    project = models.ManyToManyField(Project)

@@ -5,7 +5,10 @@ from .api import (
     SectionListViewSet,
     ProjectNotesViewSet,
     ProjectViewSet,
-    ProjectSectionViewSet)
+    ProjectSectionViewSet,
+    AddMemberViewSet)
+from django.urls import path
+from .views import add_member
 
 router = routers.DefaultRouter()
 router.register('api/subtasks', SubTaskViewSet, "subtasks")
@@ -16,5 +19,6 @@ router.register('api/projectnotes', ProjectNotesViewSet, 'projectnotes')
 router.register('api/projects', ProjectViewSet, "projects")
 router.register('api/projectSections',
                 ProjectSectionViewSet, 'projectSections')
-
+router.register("api/members", AddMemberViewSet, "add_member")
 urlpatterns = router.urls
+# urlpatterns.append(path("api/add_member", AddMemberViewSet, "add_member"))

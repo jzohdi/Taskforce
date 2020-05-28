@@ -10,10 +10,26 @@ import { ListItemIcon } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import CloseIcon from "@material-ui/icons/Close";
-import { update, addSection, deleteItem } from "../../actions/tasks";
+import {
+    update,
+    addSection,
+    deleteItem,
+    retrieve,
+    create,
+    deleteMember,
+} from "../../actions/tasks";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import Avatar from "@material-ui/core/Avatar";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import PersonIcon from "@material-ui/icons/Person";
+import { blue } from "@material-ui/core/colors";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -39,6 +55,10 @@ const useStyles = makeStyles({
     item: {
         textAlign: "center",
     },
+    avatar: {
+        backgroundColor: blue[100],
+        color: blue[600],
+    },
 });
 const initTitle = (title) => {
     return { curr: title, prev: title };
@@ -62,6 +82,25 @@ export default function ProjectBar({ props }) {
     const [sections, setSections] = useState(props.sections);
     const classes = useStyles();
     const [snackbar, setSnackbar] = useState(initSnackbar);
+    const [members, setMembers] = useState([]);
+    const [openMembers, setOpenMembers] = useState(false);
+    const [addMember, setAddMember] = useState(false);
+
+    useEffect(() => {
+        if (props.projectId !== undefined) {
+            retrieve("members", props.projectId)
+                .then((res) => {
+                    setMembers(res.data.data);
+                })
+                .catch((err) => {
+                    console.error("error in project bar", err);
+                });
+        }
+    }, [props]);
+
+    const handleCloseDialog = () => {
+        setOpenMembers(false);
+    };
     const closeSnackbar = () => {
         setSnackbar(initSnackbar);
     };
@@ -85,6 +124,32 @@ export default function ProjectBar({ props }) {
                 project: props.id,
             });
         }
+    };
+    const sendInvitation = (username) => {
+        const body = {
+            project: props.projectId,
+            username: username,
+        };
+        create("members", body)
+            .then((res) => {
+                console.log(res.data);
+                setMembers([...members, res.data.data]);
+            })
+            .catch((error) => {
+                props.handleSetSnackbar(error.response.data.error, "error");
+            });
+    };
+    const removeUser = (username) => {
+        deleteMember(props.projectId, { username })
+            .then(() => {
+                const mems = members.filter(
+                    (member) => member.username !== username
+                );
+                setMembers(mems);
+            })
+            .catch((error) => {
+                props.handleSetSnackbar(error.response.data.error, "error");
+            });
     };
     const addCallback = (response) => {
         setSections([response, ...sections]);
@@ -124,7 +189,6 @@ export default function ProjectBar({ props }) {
     const toggleDrawer = (event) => {
         setSidebar(!sidebar);
     };
-
     const list = () => (
         <div
             className={classes.list}
@@ -227,6 +291,14 @@ export default function ProjectBar({ props }) {
                 >
                     Sections
                 </ProjectBarButton>
+                <ProjectBarButton
+                    onClick={() => {
+                        setOpenMembers(true);
+                    }}
+                    style={{ margin: "0px 15px" }}
+                >
+                    Team
+                </ProjectBarButton>
                 <Drawer anchor="left" open={sidebar} onClose={toggleDrawer}>
                     {list()}
                 </Drawer>
@@ -244,6 +316,69 @@ export default function ProjectBar({ props }) {
                     {snackbar.msg}
                 </Alert>
             </Snackbar>
+            <Dialog
+                onClose={handleCloseDialog}
+                aria-labelledby="simple-dialog-title"
+                open={openMembers}
+            >
+                <DialogTitle id="simple-dialog-title">
+                    Members (Invite by username)
+                </DialogTitle>
+                <List>
+                    {members.map((member) => (
+                        <ListItem button key={member.id}>
+                            <ListItemAvatar>
+                                <Avatar className={classes.avatar}>
+                                    <PersonIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={member.username} />
+                            <IconButton
+                                onClick={() => removeUser(member.username)}
+                            >
+                                <DeleteForeverIcon />
+                            </IconButton>
+                        </ListItem>
+                    ))}
+                    {addMember ? (
+                        <ListItem>
+                            <ListItemAvatar
+                                onClick={() => {
+                                    setAddMember(false);
+                                }}
+                            >
+                                <IconButton>
+                                    {/* <Avatar> */}
+                                    <CloseIcon />
+                                    {/* </Avatar> */}
+                                </IconButton>
+                            </ListItemAvatar>
+                            <TextField
+                                onKeyDown={(e) => {
+                                    if (e.keyCode === 13) {
+                                        sendInvitation(e.target.value);
+                                    }
+                                }}
+                            />
+                        </ListItem>
+                    ) : (
+                        <ListItem
+                            autoFocus
+                            button
+                            onClick={() => {
+                                setAddMember(true);
+                            }}
+                        >
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <AddIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Add account" />
+                        </ListItem>
+                    )}
+                </List>
+            </Dialog>
         </>
     );
 }
