@@ -13,6 +13,7 @@ django-rest-knox = "~=4.1.0"
 django-oauth-toolkit = "~=0.10.0"
 django-environ = "*"
 whitenoise = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7.7"
