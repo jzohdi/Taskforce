@@ -1,17 +1,17 @@
 # Taskforce
 
 Built on Django with rest framework and React for frontend, this project is a project centered todo/task web app.
-![Home page]()
+![Home page](https://github.com/jzohdi/Taskforce/blob/master/images/home_page.png)
 Features include:
 
 -   Adding project and add team members to collaborate
 -   Use different sections on the project to compartmentalize tasks.
 -   Use Cards and tasks to organize checklist of todo
 -   Due date on tasks will color the task to indicate time left.
-    ![Project View]()
+    ![Project View](https://github.com/jzohdi/Taskforce/blob/master/images/project_main.png)
 -   Check off tasks to indicate completion and add to the Card progress bar
 -   Add sub tasks to group smaller checklists
-    ![Check Off]()
+    ![Check Off](https://github.com/jzohdi/Taskforce/blob/master/images/check_off.png)
 
 ## Contributing
 
@@ -19,6 +19,7 @@ Please open an issue, but otherwise help/suggestions are welcome!
 
 ## TODO
 
+-   [ ] Debug adding section
 -   [ ] show user who posted in notes
 -   [ ] clean up mobile UI
 -   [ ] add favicon
