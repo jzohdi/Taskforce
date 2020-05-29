@@ -1,35 +1,49 @@
 # Taskforce
 
+Built on Django with rest framework and React for frontend, this project is a project centered todo/task web app.
+![Home page]()
+Features include:
+
+-   Adding project and add team members to collaborate
+-   Use different sections on the project to compartmentalize tasks.
+-   Use Cards and tasks to organize checklist of todo
+-   Due date on tasks will color the task to indicate time left.
+    ![Project View]()
+-   Check off tasks to indicate completion and add to the Card progress bar
+-   Add sub tasks to group smaller checklists
+    ![Check Off]()
+
+## Contributing
+
+Please open an issue, but otherwise help/suggestions are welcome!
+
 ## TODO
 
--   [x] create task api
--   [x] set up react
--   [x] add projects CRUD
--   [x] display projects
--   [x] click on projects to display project view
--   [x] set up authentication
--   [x] default project section is main
--   [x] add card to project section
--   [x] add tasks to project section card
--   [ ] be able to edit task (set due date, description, sub tasks)
--   [ ] add separate sub sections in project
--   [ ] be able to change positions of cards
--   [ ] be able to change positions of tasks
--   [ ] be able to complete a task
--   [ ] be able to complete sub tasks
--   [ ] add notes to project
+-   [ ] show user who posted in notes
+-   [ ] clean up mobile UI
+-   [ ] add favicon
 
-## important commands
+## License
+
+This project is licensed under the ISC License - see the LICENSE.md file for details
+
+## Acknowledgments
+
+-   @samouri for advice and guidance.
+
+## important commands during development
 
     install pipenv using powershell admin
+
     pipenv shell
     pipenv install django djangorestframework django-rest-knox
     django-admin startproject taskmanager
-    python manage.py startapp task
-    python manage.py makemigrations tasks
-    python manage.py migrate
-    python manage.py startapp frontend
-    python manage.py runserver
+    manage.py startapp task
+    manage.py makemigrations tasks
+    manage.py migrate
+    manage.py startapp frontend
+    manage.py runserver
+    manage.py shell - test DB and app methods
 
     manage.py collectstatic
 
