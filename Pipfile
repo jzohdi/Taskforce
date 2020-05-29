@@ -15,4 +15,4 @@ django-environ = "*"
 whitenoise = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.7.7"
