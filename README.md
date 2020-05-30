@@ -19,7 +19,9 @@ Please open an issue, but otherwise help/suggestions are welcome!
 
 ## TODO
 
--   [ ] Debug adding section
+-   [x] Debug change project name
+-   [x] Debug adding section
+-   [ ] Add loading page
 -   [ ] show user who posted in notes
 -   [ ] clean up mobile UI
 -   [ ] add favicon
