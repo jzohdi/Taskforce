@@ -22,9 +22,13 @@ Please open an issue, but otherwise help/suggestions are welcome!
 -   [x] Debug change project name
 -   [x] Debug adding section
 -   [ ] Add loading page
+-   [ ] Use polling to update projects with collaborators
 -   [ ] show user who posted in notes
 -   [ ] clean up mobile UI
 -   [ ] add favicon
+-   [ ] OAuth
+-   [ ] change password/delete account
+-   [ ] Repeating tasks (task gets reset daily/weekly/etc.)
 
 ## License
 
