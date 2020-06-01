@@ -121,7 +121,7 @@ export default function ProjectBar({ props }) {
         if (sectionName.curr !== sectionName.prev) {
             update("projectSections", props.sectionId, {
                 name: sectionName.curr,
-                project: props.id,
+                project: props.projectId,
             });
         }
     };

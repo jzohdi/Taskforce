@@ -29,6 +29,7 @@ Please open an issue, but otherwise help/suggestions are welcome!
 -   [ ] OAuth
 -   [ ] change password/delete account
 -   [ ] Repeating tasks (task gets reset daily/weekly/etc.)
+-   [ ] minimize bundle size
 
 ## License
 
