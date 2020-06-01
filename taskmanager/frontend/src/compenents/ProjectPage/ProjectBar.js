@@ -155,7 +155,7 @@ export default function ProjectBar({ props }) {
         setSections([response, ...sections]);
     };
     const handleAddSection = (name) => {
-        const section = { name, project: props.id };
+        const section = { name, project: props.projectId };
         addSection(section, addCallback);
     };
     const handleSectionNameChange = (e) => {
@@ -177,7 +177,7 @@ export default function ProjectBar({ props }) {
         const currentTitle = currTitle.curr;
         if (currentTitle !== currTitle.prev) {
             setCurrTitle(initTitle(currentTitle));
-            update("projects", props.id, {
+            update("projects", props.projectId, {
                 title: currentTitle,
                 background: props.background,
             });
@@ -255,7 +255,12 @@ export default function ProjectBar({ props }) {
 
     return (
         <>
-            <div style={{ padding: "10px 5px", position: "absolute" }}>
+            <div
+                style={{
+                    padding: "10px 5px",
+                    position: "absolute",
+                }}
+            >
                 <Input
                     onChange={handleTitleChange}
                     onBlur={handleUpdateTitle}
@@ -266,7 +271,7 @@ export default function ProjectBar({ props }) {
                         "aria-label": "description",
                         style: {
                             textAlign: "center",
-                            width: 150,
+                            width: "calc(60px + 3vw)",
                         },
                     }}
                 />
@@ -281,7 +286,7 @@ export default function ProjectBar({ props }) {
                         "aria-label": "description",
                         style: {
                             textAlign: "center",
-                            width: 100,
+                            width: "calc(60px + 3vw)",
                         },
                     }}
                 />
@@ -304,7 +309,11 @@ export default function ProjectBar({ props }) {
                 </Drawer>
             </div>
             <div
-                style={{ height: 56, width: "100%", background: "transparent" }}
+                style={{
+                    height: window.innerWidth < 600 ? 70 : 56,
+                    width: "100%",
+                    background: "transparent",
+                }}
             ></div>
             <Snackbar
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}

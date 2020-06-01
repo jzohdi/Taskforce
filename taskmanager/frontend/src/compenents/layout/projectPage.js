@@ -43,7 +43,6 @@ export default function ProjectPage() {
     };
     const handleCallback = (project) => {
         if (isMounted) {
-            console.log(project);
             setProject(project);
             setCurrentSection(project.sections[0]);
             setIsLoading(false);
