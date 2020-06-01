@@ -1,7 +1,7 @@
 {
     "name": "Taskforce",
     "version": "1.0.0",
-    "description": "-   [x] create task api\r -   [ ] set up react\r -   [ ] set up login",
+    "description": "Todo app for projects",
     "main": "index.js",
     "scripts": {
         "dev": "webpack --mode development --watch ./taskmanager/frontend/src/index.js --output ./taskmanager/frontend/static/frontend/main.js",
