@@ -104,6 +104,7 @@ if os.environ.get('ENV') == 'production':
 
         'PORT': os.environ.get('DB_PORT'),
 
+        }
     }
 
 
