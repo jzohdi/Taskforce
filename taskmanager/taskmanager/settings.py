@@ -80,12 +80,31 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# USE FOR LOCAL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+if os.environ.get('ENV') == 'production':
+    DATABASES = {
+        'default': {
+
+        'ENGINE': os.environ.get('DB_ENGINE'),
+
+        'NAME': os.environ.get('DB_NAME'),
+
+        'USER': os.environ.get('DB_USER'),
+
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+
+        'HOST': os.environ.get('DB_HOST'),
+
+        'PORT': os.environ.get('DB_PORT'),
+
+    }
 
 
 # Password validation
