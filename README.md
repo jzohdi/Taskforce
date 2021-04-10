@@ -37,7 +37,7 @@ This project is licensed under the ISC License - see the LICENSE.md file for det
 
 ## Acknowledgments
 
--   @samouri for advice and guidance.
+-   [@samouri](https://github.com/samouri) for advice and guidance.
 
 ## important commands during development
 
